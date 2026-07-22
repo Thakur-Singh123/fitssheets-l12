@@ -16,7 +16,7 @@
         <div class="col-md-12 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">Edit Profilederer</h4>
+                    <h4 class="card-title">Edit Profile</h4>
                     <form method="POST" action="{{ url('/supervisor/update-profile') }}" enctype="multipart/form-data" class="forms-sample">
                         @csrf
                         <input type="hidden" id="user_id" name="user_id" class="form-control" value="{{ Auth::user()->id }}" >
