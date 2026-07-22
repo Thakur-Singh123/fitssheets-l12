@@ -1,0 +1,195 @@
+<?php
+
+namespace App\Http\Controllers\User;
+
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
+use Excel;
+use App\Models\TimeSheet;
+use App\Models\ListProblem;
+use App\Models\User;
+use App\Models\House;
+use App\Models\Company;
+use DateTime;
+use Carbon\Carbon;
+
+class ListProblemController extends Controller
+{
+    /**
+    * Display a listing of the resource.
+    *
+    * @return \Illuminate\Http\Response
+    */
+    //Function for show index
+    public function index() {
+		//Get auth
+		$user = Auth::user()->id;
+		//Get timesheets
+		$datas = TimeSheet::with('companies')->with('users')->with('houses')->where('users_id', '=', $user)->orderBy('hours_day', 'DESC')->paginate(10);
+        //Get problems
+		$data = ListProblem::where('user_id', '=', $user)->orderBy('created_at', 'DESC')->get();
+		//Var
+		$list_date = array();
+		$list_data = array();
+		$issue_arr = array();
+        //Check if data exists or not
+		if(isset($data)){
+			foreach ($data as $key => $value) {
+				$list_date[] = $value->created_at->format('y_m_d');
+				$list_data[] = array(
+					'id' => $value->id,
+					'name' => $value->name,
+					'ssn'  => $value->ssn,
+					'company' => $value->companies_id,
+					'issue' => $value->issue,
+					'status'  => $value->status,
+					'resolution' => $value->resolution_remarks,
+					'created_at' => $value->created_at->format('y_m_d'),
+				);
+			}
+		}
+        //Check if list date exist or not
+		if(isset($list_date) && isset($list_data)) {
+			$list_date = array_unique($list_date);
+			foreach($list_date as $list_dates) {
+				$arr = array();
+				foreach($list_data as $list_datas){
+					if($list_dates == $list_datas['created_at']){
+						$arr[] = $list_datas;
+					}
+				}
+				$issue_arr[] = array(
+					$list_dates => $arr,
+				);
+			}
+		}
+		return view('user.issue.ls_view',compact('issue_arr'));
+    }
+
+	//Function for create list problem
+	public function create() {
+        //Get auth id
+		$user = Auth::user()->id;
+        //Get companies
+		$Company = Auth::user()->companies_id;
+        //Get name
+		$name = Auth::user()->name;
+        //Get ssn
+		$ssn = Auth::user()->ssn_no;
+        //Get companies
+		$companies = Company::orderBy('display_order', 'ASC')->get();
+       //Check if company exits or not
+		if($Company == "Quantumleap, Inc") {
+			$houses = House::where('companies_id', '=', $Company)->orderBy('created_at', 'DESC')->get();
+		} else {
+			$Com = array();
+			$Com[] = "Quantumleap, Inc";
+			$houses = House::whereNotIn('companies_id', $Com)->orderBy('created_at', 'DESC')->get();
+		}
+        return view('user.issue.ls_add', compact('companies','user','houses','name','ssn'));
+    }
+
+	/**
+    * Store a newly created resource in storage.
+    *
+    * @param  \Illuminate\Http\Request  $request
+    * @return \Illuminate\Http\Response
+    */
+    //Functino for store list
+    public function store(Request $request) {
+		//Get auth user
+		$user_id = Auth::user()->id;
+		$name = Auth::user()->name;
+		$ssn = Auth::user()->ssn_no;
+		//$hours = $request->hours_day;
+		//Validate input fields
+		$request->validate([
+			'company_id' => 'required',
+			'issue'=> 'required',
+		]);
+        //Get user
+		$user = User::where('id', '=', $user_id)->first();
+		    $form_data = array(
+				'companies_id' => $request->company_id,
+				'ssn' => $ssn,
+				'user_id' => $user_id,
+				'name'  => $name,
+				'issue'  => $request->issue,
+				'resolution_remarks'  => $request->resolution_remarks
+		    );
+        //Create problem
+		$ls_store = ListProblem::create($form_data);
+        //Check if issue created or not
+		if($ls_store) {
+			return redirect('/list-issue')->with(['success' => 'Issue Added Successfully.']);
+		} else {
+			return redirect()->back()->with(['success' => 'Error while Adding Issue!!']);
+		}
+    }
+
+	//Function for edit issue
+	public function edit($id) {
+		//Get user
+		$user = Auth::user()->id;
+		$Company = Auth::user()->companies_id;
+		$name = Auth::user()->name;
+		$ssn = Auth::user()->ssn_no;
+        //Get companies
+		$companies = Company::orderBy('display_order', 'ASC')->get();
+        //Get problem
+		$data = ListProblem::where('id', '=', $id)->get();
+
+		return view('user.issue.ls_edit',compact('data','companies','user','ssn','name'));
+    }
+
+	/**
+    * Update the specified resource in storage.
+    *
+    * @param  \Illuminate\Http\Request  $request
+    * @param  int  $id
+    * @return \Illuminate\Http\Response
+    */
+
+	//Function for update issue
+    public function update(Request $request) {
+        //Get auth login
+		$user = Auth::user()->id;
+        $name = Auth::user()->name;
+		$ssn = Auth::user()->ssn_no;
+		$rules = [
+			'issue' => 'required',
+		];
+		$customMessages = [
+			'issue' => 'Please add issue',
+		];
+		//$this->validate($request, $rules, $customMessages);
+		$this->validate($request, $rules, $customMessages);
+
+		$form_data = array(
+			'issue'  => $request->issue,
+			'resolution_remarks'  => $request->resolution_remarks,
+		);
+		$ls_update = ListProblem::whereId($request->hidden_id)->update($form_data);
+        //Check if issue updated or not
+		if($ls_update) {
+			return redirect('/list-issue')->with(['success' => 'Issue Updated Successfully.']);
+		} else {
+			return redirect()->back()->with(['success' => 'Error while updating Issue!!']);
+		}
+    }
+    
+	//Function for companes
+	public static function company($id) {
+		//Get company
+		$data = Company::findOrFail($id);
+		$company = "";
+		if(isset($data)) {
+			$company = $data->company;
+		}
+	   return $company;
+	}
+}
+
