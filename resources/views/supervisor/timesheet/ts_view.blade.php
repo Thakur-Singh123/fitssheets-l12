@@ -63,7 +63,7 @@ use Illuminate\Support\Str;
 							<h4 class="card-title">Time Sheets(<b>{{ $name }}</b>)</h4>
 						</div>
 						<div class="col-md-2">
-							<h5 > Search Timesheets </h5>
+							<h5 > Search Timesheets</h5>
 						</div>
 						<div class="col-md-3">
 							<div class="form-group row">
@@ -135,7 +135,7 @@ use Illuminate\Support\Str;
 						@if($data->count() != 0)
 						@foreach ($data as $datas)
 						<tr>
-							<td>{{ $count ++ }}.</td>
+							<td>{{ ($data->currentPage() - 1) * $data->perPage() + $loop->iteration }}.</td>
 							<td> {{ $datas->users->emp_id  }}</td>
 							<?php if(!empty($cm_check)){ ?>
 							<?php if($datas->cmcheck_status == 2){ ?>

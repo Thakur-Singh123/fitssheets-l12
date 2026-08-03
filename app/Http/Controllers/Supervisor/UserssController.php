@@ -121,7 +121,7 @@ class UserssController extends Controller
 		}
 		//$companiess = Company::orderBy('company', 'ASC')->get();
 		$companiess = Company::orderBy('display_order', 'ASC')->get();
-		$data = User::with('companies')->whereIn('id', $user_idss)->where('role', '=', "user")->orderBy('name', 'ASC')->get();
+		$data = User::with('companies')->whereIn('id', $user_idss)->where('role', '=', "user")->orderBy('name', 'ASC')->paginate(10);
 		return view('supervisor.users.time_user_view',compact('data','user_f_name','companiess','frm_date','t_date'));
     }
 	
@@ -265,11 +265,11 @@ class UserssController extends Controller
 			$sfrm_date = explode('-',$frm_dt);
 			$sfrm_date = implode('_',$sfrm_date);
 			$st_date = explode('-',$to_dt);
-			$st_date = implode('_',$st_date);
+			$st_date = implode('_',$st_date); 
 		}
 		$user = User::where("role", "=", "user")->where('id', '=', $id)->orderBy('created_at', 'DESC')->first();
 		$name = $user->name;
-		$data = TimeSheet::with('companies')->whereBetween('hours_day', array($sfrm_date, $st_date))->where('users_id', '=', $id)->orderBy('created_at', 'ASC')->get();
+		$data = TimeSheet::with('companies')->whereBetween('hours_day', array($sfrm_date, $st_date))->where('users_id', '=', $id)->orderBy('created_at', 'ASC')->paginate(10);
 		
 		return view('supervisor.timesheet.ts_view',compact('data', 'id','name','frm_date','t_date'));
     }

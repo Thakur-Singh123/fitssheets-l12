@@ -80,10 +80,11 @@
       </a>
     </li> -->
     <li class="nav-item">
-        <a class="nav-link" href="{{ url('/enter-vaccation') }}">
-        <i class="menu-icon typcn typcn-coffee"></i>
-        <span class="menu-title">Vaccations</span>
-        <i class="menu-arrow"></i>
+        <a class="nav-link {{ request()->is('enter-vaccation*') ? 'active' : '' }}" href="{{ url('/enter-vaccation') }}">
+          <i class="menu-icon typcn typcn-coffee"></i>
+          <span class="menu-title">
+            Vaccations</span>
+          <i class="menu-arrow"></i>
         </a>
     </li>
     <!--li class="nav-item">

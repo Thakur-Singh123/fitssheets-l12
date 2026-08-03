@@ -23,7 +23,7 @@
 						</div>
 					</div>
 					@if($data->count() != 0)
-					<div align="left">
+					<div align="right">
 						<a href="{{ route('export.time-sheet') }}" id="export" class="btn btn-success"><i class="fa fa-calendar"></i>  Export to Excel</a>
 					</div>
 					@endif <br>

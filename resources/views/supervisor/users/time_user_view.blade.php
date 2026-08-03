@@ -139,7 +139,26 @@ ul.imp_actions a {
     height: 25px !important;
 
 }
-
+#sortable-table-1 thead th {
+	padding:5px 10px !important;
+	vertical-align:middle !important;
+}
+#sortable-table-1 thead .btn {
+	padding:3px 8px !important;
+	font-size:12px !important;
+	line-height:1.2 !important;
+}
+#sortable-table-1 thead input[type="checkbox"] {
+    margin-top:4px !important;
+}
+thead th {
+	text-align:center;
+	vertical-align:middle;
+}
+thead th input[type="checkbox"] {
+	display:block;
+	margin:8px auto 0;
+}
 </style>
 
 <div class="content-wrapper">
@@ -162,7 +181,7 @@ ul.imp_actions a {
 
 		  <div class="card-body">
 
-			<h4 class="card-title">Users</h4>
+			<h4 class="card-title">Usersdfdf</h4>
 
 			<form style="display:none" class="form-sample">
 
@@ -269,28 +288,32 @@ ul.imp_actions a {
 				 <button style="width:161px;" data-baseURL="{{ url('/') }}" id="nsearch_payperiod" type="submit" class="btn btn-success mr-2"><i class="fa fa-search"></i>Search Payperiod</button>
 
 				 </div>
-
+{{-- 
 				 <div class="col-md-2">
 
-				 <a href="" style="width:175px;margin-left: 15px" id="export_all_user" class="btn btn-success"><i class="fa fa-calendar"></i> Export Timesheets</a>
+				 <a href="" style="width:175px;margin-right: 15px" id="export_all_user" class="btn btn-success"><i class="fa fa-calendar"></i> Export Timesheets</a>
 
 				 </button>
 
-				 </div>
+				 </div> --}}
 
+
+				 	
 			  </div>
+<div align="right">
+					<a href="" id="export_all_user" class="btn btn-success"><i class="fa fa-calendar"></i> Export Timesheets</a>
+				</div>
 
 			  
 
 			</form>
 
-			<table id="sortable-table-1" class="table table-striped table-responsive">
+			<table id="sortable-table-1" class="table dataTable table-striped table-responsive">
 
 			  <thead>
-
 				<tr>
 
-				  <th class="sortStyle unsortStyle"> #<i class="mdi mdi-chevron-down"></i> </th>
+				  <th class="sortStyle unsortStyle">Sr. No<i class="mdi mdi-chevron-down"></i> </th>
 
 				  <th class="sortStyle unsortStyle"> Emp ID<i class="mdi mdi-chevron-down"></i> </th>
 
@@ -358,7 +381,7 @@ ul.imp_actions a {
 
 					<tr <?php if($color_info != "") { ?>style="background:<?php echo $color_info; } ?>">
 
-					  <td><?php echo $count; ?></td>
+					<td>{{ ($data->currentPage() - 1) * $data->perPage() + $loop->iteration }}.</td>
 
 					  <td> {{ $datas->emp_id  }} </td>
 
@@ -605,16 +628,18 @@ ul.imp_actions a {
 				
 
 				@else
-
-					<p>Sorry No Data!!</p>
-
-				@endif
+						<tr>
+							<td colspan="16" class="no-data">
+							Sorry, No data found!
+							</td>
+						</tr>
+						@endif
 
 			  </tbody>
 
 			</table>
 
-			
+		   {{ $data->links('pagination::bootstrap-5') }}
 
 		  </div>
 
@@ -658,7 +683,7 @@ ul.imp_actions a {
 
 				
 
-				  <th class="sortStyle unsortStyle"> #<i class="mdi mdi-chevron-down"></i> </th>
+				  <th class="sortStyle unsortStyle">Sr. No<i class="mdi mdi-chevron-down"></i> </th>
 
 				  <th class="sortStyle unsortStyle"> Emp ID<i class="mdi mdi-chevron-down"></i> </th>
 
