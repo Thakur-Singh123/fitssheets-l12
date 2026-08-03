@@ -84,7 +84,61 @@ class AdminController extends Controller
 	  Auth::logout();
 	  return redirect('/login');
 	}
-	
+
+	//Function for edit profile
+    public function edit_profile() {
+		return view('admin.profile');
+    }
+
+	//Function for update password
+	public function update_profile(Request $request) {
+		//Validate input fields
+		$request->validate([
+			'fname' => 'required',
+			'phone_no' => 'required',
+		]);
+		//Check if image is exit or not
+		$filename = "";
+		if($request->hasFile('avtar')) {
+			$file = $request->file('avtar');
+			$extension = $file->getClientOriginalExtension();
+			$filename = time() . '.' . $extension;
+			$file->move(public_path('assets/uploads/admin'), $filename);
+			//Concreate name
+			$name = $request->fname." ".$request->lname;
+			//Update user with image
+			$use_dl = User::whereId($request->user_id)->update(array(
+				'name' => $name,
+				'first_name' => $request->fname,
+				'last_name' => $request->lname,
+				'phone_no' => $request->phone_no,
+				'avtar' => $filename,
+			));
+			//Check if profile updated or not
+			if($use_dl) {
+			    return back()->with('success','Profile updated successfully.');
+			} else {
+			    return back()->with('error','Opps something went wrong!');
+			}
+		} else {
+			//Concreate name
+			$name = $request->fname." ".$request->lname;
+			//Update user without image
+		    $use_dl = User::whereId($request->user_id)->update(array(
+				'name' => $name,
+				'first_name' =>	$request->fname,
+				'last_name' =>	$request->lname,
+				'phone_no' => $request->phone_no,
+			));
+			//Check if profile updated or not
+			if($use_dl) {
+			    return back()->with('success','Profile updated successfully.');
+			} else {
+				return back()->with('error','Opps something went wrong!');
+			}
+	    }
+	}
+
 	/**
      * User Reset Password
      *
@@ -98,7 +152,7 @@ class AdminController extends Controller
 	
 	//function for update profile password
 	public function updatepassword(Request $request){
-		request()->validate([
+	    request()->validate([
             'current_password' => 'required',
             'new_password' => 'min:6|required_with:confirm_password|same:new_confirm_password',
             'new_confirm_password' => 'required',
@@ -109,7 +163,7 @@ class AdminController extends Controller
 		$user = User::where('id', '=', $user_id)->first(); 
 
 		if(!Hash::check($request['current_password'], $user->password)){
-			return back()->with('Pass_Success','Password does not match');
+			return back()->with('error','Current password is incorrect!');
 		} else {
 			$update_pass = DB::table('users')
 			->where('id', $user->id)
@@ -119,9 +173,9 @@ class AdminController extends Controller
 			'pass' => $request['new_password'],
 			]);
 			if($update_pass){
-				return back()->with('Pass_Success','Your Password is updated successfully!');
+				return back()->with('success','Your Password is updated successfully.');
 			} else {
-				return back()->with('Pass_Success','Oops something went wrong');
+				return back()->with('error','Oops something went wrong');
 			}
 		}
 	}

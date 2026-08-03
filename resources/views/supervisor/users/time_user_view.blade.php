@@ -181,7 +181,7 @@ thead th input[type="checkbox"] {
 
 		  <div class="card-body">
 
-			<h4 class="card-title">Usersdfdf</h4>
+			<h4 class="card-title">Users</h4>
 
 			<form style="display:none" class="form-sample">
 

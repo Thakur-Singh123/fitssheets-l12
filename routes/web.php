@@ -58,9 +58,12 @@ Route::group(['middleware' => 'auth'], function () {
 		//Dasbobard
 		Route::get('/dashboard', [\App\Http\Controllers\Admin\AdminController::class, 'index'])->name('admin.dashboard');
 		Route::get('/admin-logout', [\App\Http\Controllers\Admin\AdminController::class, 'logout'])->name('admin.logout');
+		//Profile
+		Route::get('/admin/edit-profile', 'Admin\AdminController@edit_profile');
+		Route::post('/admin/update-profile', 'Admin\AdminController@update_profile');
 		//Reset password
-		Route::get('/profile/resetpassword', 'Admin\AdminController@resetpassword');
-		Route::post('/profile/updatepassword', 'Admin\AdminController@updatepassword');
+		Route::get('/admin/change-password', 'Admin\AdminController@resetpassword');
+		Route::post('/admin/updatepassword', 'Admin\AdminController@updatepassword');
 		//Twillio
 		Route::get('/smsnotifications', [\App\Http\Controllers\Admin\AdminController::class, 'sendSmsview']);
 		Route::post('/smsnotification', [\App\Http\Controllers\Admin\AdminController::class, 'sendSms']);
