@@ -1300,7 +1300,7 @@ public function nsrch_time(Request $request)
 					   echo  '<td></td>';
 					echo '</tr>';
 			  }else{
-					echo "<p>Sorry No Data!!</p>";
+					echo "<p class='no-data' style='text-align:center; color:red; font-weight:bold;'>Sorry, No data found!</p>";
 			  }
     }
 

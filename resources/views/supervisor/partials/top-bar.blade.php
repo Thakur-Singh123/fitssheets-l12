@@ -76,12 +76,12 @@
             </p>
             <p class="font-weight-light text-muted mb-0">{{ Auth::user()->email }}</p>
           </div>
-          <a href="{{ url('/supervisor/edit-profile') }}" class="dropdown-item {{ request()->is('edit-profile') ? 'active' : '' }}">
+          <a href="{{ url('/supervisor/edit-profile') }}" class="dropdown-item {{ request()->is('supervisor/edit-profile') ? 'active' : '' }}">
             Edit Profile
             <span class="badge badge-pill badge-danger"></span>
             <i class="dropdown-item-icon ti-dashboard"></i>
           </a>
-          <a href="{{ url('/supervisor/change-password') }}" class="dropdown-item {{ request()->is('change-password') ? 'active' : '' }}">
+          <a href="{{ url('/supervisor/change-password') }}" class="dropdown-item {{ request()->is('supervisor/change-password') ? 'active' : '' }}">
             Change Password
             <i class="dropdown-item-icon ti-power-off"></i>
           </a>

@@ -1,11 +1,4 @@
-<style>
-  .sidebar .nav .sub-menu .nav-item:hover{
-    background: transparent !important;
-  }
-  .sidebar .nav .sub-menu .nav-item:hover .nav-link{
-    background: transparent !important;
-  }
-</style>
+
 <nav class="sidebar sidebar-offcanvas" id="sidebar">
   <ul class="nav">
     <li class="nav-item nav-profile">
