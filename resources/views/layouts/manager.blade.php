@@ -4,6 +4,7 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Fitssheets</title>
     <!-- plugins:css -->
     <link rel="stylesheet" href="{{ url('public/assets/vendors/iconfonts/mdi/css/materialdesignicons.min.css') }}">
@@ -51,6 +52,9 @@
     <!-- Plugin js for this page-->
     <!-- End plugin js for this page-->
     <!-- inject:js -->
+           <script>
+            var base_url = '{{ url("/") }}'; 
+        </script>
 	<script src="{{ url('public/assets/vendors/js/vendor.bundle.base.js') }}"></script>
     <script src="{{ url('public/assets/vendors/js/vendor.bundle.addons.js') }}"></script>
     <script src="{{ url('public/assets/js/shared/off-canvas.js') }}"></script>

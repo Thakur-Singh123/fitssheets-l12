@@ -122,12 +122,13 @@ Route::group(['middleware' => 'auth'], function () {
 		Route::any('/all/payperiod/paysearch/postdata', 'Admin\UserInfoController@post_paydata');
 	    //Route::get('user/aexports/test/{frmdate1}/{todate1}/{search_by_comp1}', 'Admin\UserInfoController@allexport_data_new');
 		//Route::get('time-sheets/destroy/{id}', 'User\TimesheetController@destroy');
-		//Payperiod
+		//Payperiod 
 		Route::resource('payperiods', 'Admin\PayperiodsController');
 		Route::post('payperiods/store', 'Admin\PayperiodsController@store')->name('payperiods.store');
 		Route::post('payperiods/astore', 'Admin\PayperiodsController@astore')->name('payperiods.astore');
 		Route::post('payperiods/update', 'Admin\PayperiodsController@update')->name('payperiods.update');
-		Route::get('payperiods/destroy/{id}', 'Admin\PayperiodsController@destroy');
+		Route::get('payperiod/destroy', 'Admin\PayperiodsController@destroy');
+		
 		//Manager
 		Route::resource('casemanagers', 'Admin\CaseManagerInfoController');
 		//Supervisor

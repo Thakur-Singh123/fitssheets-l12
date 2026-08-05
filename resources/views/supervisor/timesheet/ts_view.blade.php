@@ -157,7 +157,7 @@ use Illuminate\Support\Str;
 							<a href="{{ url('/suser/edit/timesheets/'.$datas->id) }}" title="Edit">
 							<i class="fa fa-pencil"></i>
 							</a>
-							<a style="margin-left: 5px;" class="delete_utimesheet_record" data-timesheet_id ="{{ $datas->id }}" title="Delete"><i class="fa fa-trash-o"></i></a>
+							<a style="margin-left:5px;" class="delete_utimesheet_record" data-timesheet_id ="{{ $datas->id }}" title="Delete"><i class="fa fa-trash-o"></i></a>
 							<!-- <a style="margin-left: 5px;" data-baseURL="{{ url('/') }}" data-ID="{{ $datas->id  }}" class="delete_sts" title="Delete"><i class="fa fa-trash-o"></i></a> -->
 							</td>
 							<td><input type="checkbox" class="time_id"  value="<?php echo $datas->id; ?>" <?php if($datas->approve == 2){ echo "checked"; } ?> name="time_id[]" ></td>
@@ -200,7 +200,7 @@ use Illuminate\Support\Str;
 						@else
 						<tr>
 							<td colspan="16" class="no-data">
-							Sorry, No data found!
+							    Sorry, No data found!
 							</td>
 						</tr>
 						@endif
