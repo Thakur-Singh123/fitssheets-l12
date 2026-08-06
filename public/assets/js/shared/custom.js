@@ -1740,9 +1740,7 @@ $(document).on('click','#submit_dt', function(e){
 			// console.log(data);
 			$("#result").html(data);
 		}
-	})		
-	
-		
+	})			
 });
 
 
@@ -2200,4 +2198,31 @@ $(document).on('click','#tpapprove_all', function(event){
 			return false;
 		}
 
+});
+
+
+//Disabled 
+$(document).ready(function () {
+    function toggleMonths() {
+        var currentYear = new Date().getFullYear();
+        var currentMonth = new Date().getMonth() + 1;
+        var selectedYear = parseInt($("#aap_year").val());
+
+        $("#aap_month option").prop("disabled", false);
+        if (selectedYear == currentYear) {
+            $("#aap_month option").each(function () {
+                var month = parseInt($(this).val());
+                if (month > currentMonth) {
+                    $(this).prop("disabled", true);
+                }
+            });
+            if (parseInt($("#aap_month").val()) > currentMonth) {
+                $("#aap_month").val("0");
+            }
+        }
+    }
+    $("#aap_year").change(function () {
+        toggleMonths();
+    });
+    toggleMonths();
 });

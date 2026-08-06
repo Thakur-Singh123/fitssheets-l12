@@ -507,49 +507,48 @@ class AdminController extends Controller
 	}
 	
 	public function all_users_vaccine_report(){
-		$users = User::where('role', '=', "user")->orderBy('name', 'ASC')->get();
+		$users = User::where('role', '=', "user")->orderBy('name', 'ASC')->paginate(10);
 		return view('admin.reports.all_users_vaccine_report',compact('users'));
 	}
 	
 	public function vaccine_status(Request $request){
 		$vaccine_status = $request->vaccine_status;
-
 		if($vaccine_status == '1'){
-			$users = User::where('role', '=', "user")->where('covid_report', 'like', '%emp_covid_report%')->orderBy('name', 'ASC')->get();
+			$users = User::where('role', '=', "user")->where('covid_report', 'like', '%emp_covid_report%')->orderBy('name', 'ASC')->paginate(10);
 		}elseif($vaccine_status == '0'){
-			$users = User::where('role', '=', "user")->where('covid_report', '=', '0')->orderBy('name', 'ASC')->get();
+			$users = User::where('role', '=', "user")->where('covid_report', '=', '0')->orderBy('name', 'ASC')->paginate(10);
 		}else{
-			$users = User::where('role', '=', "user")->where('covid_report', '=', '')->orderBy('name', 'ASC')->get();
+			$users = User::where('role', '=', "user")->where('covid_report', '=', '')->orderBy('name', 'ASC')->paginate(10);
 		}
 		$count = 1;
-			  if($users->count() != 0){
-				foreach ($users as $datas){
-					echo '<tr>';
-					  echo '<td>'.$count.'</td>';
-					  echo '<td>'.$datas->email.'</td>';
-					 echo '<td>'.$datas->name.'</td>';
-					  echo '<td>';
-					  if($datas->covid_report == ""){ echo "<p style='color: #000;background: yellow;width: 50%;text-align: center;padding: 5px;border-radius: 10px;'>--</p>"; }elseif( $datas->covid_report == '0'){ echo "<p style='color: #fff;background: red;width: 50%;text-align: center;padding: 5px;border-radius: 10px;'>No</p>";}elseif( $datas->covid_report != "" && $datas->covid_report != '0'){ echo "<p style='color: #fff;background: green;width: 50%;text-align: center;padding: 5px;border-radius: 10px;'>yes</p>"; }else{ echo "<p style='color: #000;background: yellow;width: 50%;text-align: center;padding: 5px;border-radius: 10px;'>--</p>"; }
-					  echo '</td>';
-					  echo '<td>';
-					  if($datas->covid_report != null && $datas->covid_report != '0' ){ 
-					echo '<img style=" margin-top: 15px; width: 152px;height: 156px;border-radius: inherit !important;" src="'.url('/assets/uploads/covid-report').'/'.$datas->covid_report.'">';
-					} else{ 
-						echo '<p>No Report Found!</p>';
-						
-					}  
+		if($users->count() != 0){
+			foreach ($users as $datas){
+				echo '<tr>';
+				echo '<td>'.$count.'</td>';
+				echo '<td>'.$datas->email.'</td>';
+				echo '<td>'.$datas->name.'</td>';
+				echo '<td>';
+				if($datas->covid_report == ""){ echo "<p style='color: #000;background: yellow;width: 50%;text-align: center;padding: 5px;border-radius: 10px;'>--</p>"; }elseif( $datas->covid_report == '0'){ echo "<p style='color: #fff;background: red;width: 50%;text-align: center;padding: 5px;border-radius: 10px;'>No</p>";}elseif( $datas->covid_report != "" && $datas->covid_report != '0'){ echo "<p style='color: #fff;background: green;width: 50%;text-align: center;padding: 5px;border-radius: 10px;'>yes</p>"; }else{ echo "<p style='color: #000;background: yellow;width: 50%;text-align: center;padding: 5px;border-radius: 10px;'>--</p>"; }
 				echo '</td>';
+				echo '<td>';
+				if($datas->covid_report != null && $datas->covid_report != '0' ){ 
+					echo '<img style=" margin-top: 15px; width: 152px;height: 156px;border-radius: inherit !important;" src="'.url('/assets/uploads/covid-report').'/'.$datas->covid_report.'">';
+				} else{ 
+					echo '<tr>';
+					echo '<td colspan="5" class="text-center no-data">Sorry no data found!!</td>';
 					echo '</tr>';
-				 $count++;
-				}
-				
-				}else{
-					echo '<p>Sorry No Data!!</p>';
-				}
-	}
-	
-	
-	
+				}  
+					echo '</td>';
+					echo '</tr>';
+					$count++;
+			}
+		}else{
+			echo '<tr>';
+			echo '<td colspan="5" class="text-center no-data">Sorry no data found!!</td>';
+			echo '</tr>';
+		}
+	} 
+	 
 	//function for all users
 	public function all_users(){
 		
@@ -1926,7 +1925,7 @@ class AdminController extends Controller
 	}
 	
 	public function all_applicants_view(){
-		$users = User::where('role', '=', "user")->whereNotIn('id', [276])->orderBy('name', 'ASC')->get();
+		$users = User::where('role', '=', "user")->whereNotIn('id', [276])->orderBy('name', 'ASC')->paginate(10);
 		return view('admin.reports.all_applicant_view',compact('users'));
 	}
 	
@@ -1959,37 +1958,40 @@ class AdminController extends Controller
 	}
 	
 	public function all_new_applicants_view(){
-		$users = User::where('role', '=', "user")->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->whereNotIn('id', [276])->orderBy('name', 'ASC')->get();
+		$users = User::where('role', '=', "user")->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->whereNotIn('id', [276])->orderBy('name', 'ASC')->paginate(10);
 		return view('admin.reports.all_new_applicant_view',compact('users'));
 	}
 	
 	public function search_all_new_applicants(Request $request){
+		//Get month & year
 		$aap_month = $request->aap_month;
 		$aap_year  = $request->aap_year;
 		
-		$users = User::where('role', '=', "user")->whereMonth('created_at', date($aap_month))->whereYear('created_at', date($aap_year))->whereNotIn('id', [276])->orderBy('name', 'ASC')->get();
+		//$users = User::where('role', '=', "user")->whereMonth('created_at', date($aap_month))->whereYear('created_at', date($aap_year))->whereNotIn('id', [276])->orderBy('name', 'ASC')->get();
+		$users = User::where('role', 'user')->whereMonth('created_at', $aap_month)->whereYear('created_at', $aap_year)->whereNotIn('id', [276])->orderBy('name', 'ASC')->get();
 		$count = 1;
 		// echo "<pre>";
 		// print_r($users);
 		// die;
-		if(isset($users)){
-				foreach($users as $user){
-					
-					echo '<tr>';
-					  echo '<td>'.$count.'</td>';
-					  echo '<td>'.$user->name.'</td>';
-					  echo '<td>';
-					  $user_companies = $this->user_companies($user->id);
-					  echo '<ul class="comp_list">'.$user_companies.'</ul>';
-					  echo '</td>';
-					  echo '<td>'.$user->emp_id.'</td>';
-					  echo '<td>'.$user->dept.'</td>';
-					echo '</tr>';
-					
-					$count++; 
-				}
+		if($users->count() > 0) {
+			foreach($users as $user){
+				echo '<tr>';
+				echo '<td>'.$count.'</td>';
+				echo '<td>'.$user->name.'</td>';
+				echo '<td>';
+				$user_companies = $this->user_companies($user->id);
+				echo '<ul class="comp_list">'.$user_companies.'</ul>';
+				echo '</td>';
+				echo '<td>'.$user->emp_id.'</td>';
+				echo '<td>'.$user->dept.'</td>';
+				echo '</tr>';
+				$count++; 
+			}
+		} else {
+			echo '<tr>';
+			echo '<td colspan="5" class="text-center no-data">Sorry no data found!!</td>';
+			echo '</tr>';
 		}
-		
 	}
 	
 	//function for all users
