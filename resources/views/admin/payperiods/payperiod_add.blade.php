@@ -17,7 +17,7 @@
     <div class="col-md-12 grid-margin stretch-card">
       <div class="card">
         <div class="card-body">
-          <h4 class="card-title">Create New Payperiod</h4>
+          <h4 class="card-title">Add Payperiod</h4>
           <p style="display:none" class="card-description"> 
             Basic form elements 
           </p>

@@ -9,32 +9,30 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use DB;
 use Illuminate\Support\Facades\Validator;
-use App\TimeSheet;
+use App\Models\TimeSheet;
 use Excel;
-use App\User;
-use App\AdminMeta;
-use App\Company;
-use App\Holiday;
-use App\Department;
-use App\UserManager;
+use App\Models\User;
+use App\Models\AdminMeta;
+use App\Models\Company;
+use App\Models\Holiday;
+use App\Models\Department;
+use App\Models\UserManager;
 use DateTime;
-use App\Payperiods;
-use App\UserSupervisorRel;
-use App\UserCasemanagerRel;
-use App\UserVaccatioStatusn;
-use App\UserVaccation;
-
+use App\Models\Payperiods;
+use App\Models\UserSupervisorRel;
+use App\Models\UserCasemanagerRel;
+use App\Models\UserVaccatioStatusn;
+use App\Models\UserVaccation;
 
 class UserInfoController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-	 
+    * Display a listing of the resource.
+    *
+    * @return \Illuminate\Http\Response
+    */
 
-	 public function timesheetapproval(){
+	public function timesheetapproval() {
 		$payperiods_dates = payperiods();
 		if(isset($payperiods_dates)){
 			 $frm_date  = $payperiods_dates[0]['frm_date'];
@@ -44,15 +42,12 @@ class UserInfoController extends Controller
 			$t_date = "";
 		}
 		$data = User::with('companies')->where("role", "=", "user")->orderBy('name', 'ASC')->paginate(15);
-		//$companies = Company::orderBy('company', 'ASC')->get();
 		$companies = Company::orderBy('display_order', 'ASC')->get();
 		$Supervisor_color = User::where("role", "=", "supervisor")->orderBy('name', 'ASC')->get();
-		//dd($Supervisor_color); die();
 		return view('admin.users.timesheet',compact('data', 'companies','frm_date','t_date','Supervisor_color'));
-	 }
-    public function index()
-    {
-		//print_r('hii');die();
+	}
+
+    public function index() {
 		$payperiods_dates = payperiods();
 		if(isset($payperiods_dates)){
 			 $frm_date  = $payperiods_dates[0]['frm_date'];
@@ -61,21 +56,15 @@ class UserInfoController extends Controller
 			$frm_date  = "";
 			$t_date = "";
 		}
-		
-			$payperiods_dates1 = Payperiods::with('companies')->orderBy('created_at', 'DESC')->get();
-			//dd($payperiods_dates1);
+		$payperiods_dates1 = Payperiods::with('companies')->orderBy('created_at', 'DESC')->get();
 		$data = User::with('companies')->where("role", "=", "user")->orderBy('name', 'ASC')->paginate(15);
 		$datauser = User::where('role', 'user')->orderBy('name', 'ASC')->get();
-	$companies = Company::orderBy('company', 'ASC')->get();
-		//$companies = Company::orderBy('display_order', 'ASC')->get();
-		//print_r($companies);
+	    $companies = Company::orderBy('company', 'ASC')->get();
 		$Supervisor_color = User::where("role", "=", "supervisor")->orderBy('name', 'ASC')->get();
 		return view('admin.users.user_view',compact('data', 'companies','frm_date','t_date','Supervisor_color','datauser','payperiods_dates1'));
     }
 	
-	public function user_with_date($frm_dt,$to_dt)
-    {
-		
+	public function user_with_date($frm_dt,$to_dt) {
 		$payperiods_dates = payperiods();
 		if(isset($payperiods_dates)){
 			 $frm_date  = $payperiods_dates[0]['frm_date'];
@@ -89,14 +78,11 @@ class UserInfoController extends Controller
 			$t_date = $to_dt;
 		}
 		$data = User::with('companies')->where("role", "=", "user")->orderBy('name', 'ASC')->paginate(15);
-		//$companies = Company::orderBy('company', 'ASC')->get();
 		$companies = Company::orderBy('display_order', 'ASC')->get();
 		return view('admin.users.user_view',compact('data', 'companies','frm_date','t_date'));
     }
 	
-	public function user_with_com($frm_dt,$to_dt,$search_by_comp)
-    {
-		
+	public function user_with_com($frm_dt,$to_dt,$search_by_comp) {
 		$payperiods_dates = payperiods();
 		if(isset($payperiods_dates)){
 			 $frm_date  = $payperiods_dates[0]['frm_date'];
@@ -109,15 +95,12 @@ class UserInfoController extends Controller
 			$frm_date = $frm_dt;
 			$t_date = $to_dt;
 		}
-		
 		if($frm_date && $to_dt){
 		$from_date    = explode('_', $frm_dt);
 		$from_date = implode("-", $from_date);
 		$to_date    = explode('_', $to_dt);
 		$to_date = implode("-", $to_date);
 		}
-		
-		
 		$company_id = array();
 		$user_idss = array();
 		if(isset($search_by_comp) && $search_by_comp != 0){
@@ -154,24 +137,23 @@ class UserInfoController extends Controller
 		$users = User::with('companies')->whereIn('id', $user_idss)->where('role', '=', "user")->orderBy('created_at', 'DESC')->get();
 		$user_arr = array();
 		$user_count = 1;
-				if(isset($users)){
-
+			if(isset($users)){
 			foreach($users as $userss){
 			$user_arr[] = $userss->id;
 			}
 		}
 		if($frm_date == $t_date){
 			$data = TimeSheet::with('companies')
-								->with('houses')
-								->with('users')
-								->where('hours_day', $frm_date)
-								->whereIn('users_id', $user_arr)
-								->distinct()->get(['users_id']);
+				->with('houses')
+				->with('users')
+				->where('hours_day', $frm_date)
+				->whereIn('users_id', $user_arr)
+				->distinct()->get(['users_id']);
 		}else{
 			$data = TimeSheet::with('companies')
-								->whereBetween('hours_day', array($frm_date, $t_date))
-								->whereIn('users_id', $user_arr)
-								->distinct()->get(['users_id']);
+				->whereBetween('hours_day', array($frm_date, $t_date))
+				->whereIn('users_id', $user_arr)
+				->distinct()->get(['users_id']);
 		}
 		
 		$user_time = array();
@@ -180,25 +162,18 @@ class UserInfoController extends Controller
 				$user_time[] = $datas->users_id;
 			}
 		}
-		// $data = User::with('companies')->where("role", "=", "user")->orderBy('name', 'ASC')->paginate(15);
 		$data = User::with('companies')->whereIn('id', $user_time)->where('role', '=', "user")->orderBy('created_at', 'DESC')->paginate(35);
 		$companies = Company::orderBy('display_order', 'ASC')->get();
-		//$companies = Company::orderBy('company', 'ASC')->get();
-		//print($data);
 		return view('admin.users.user_view',compact('data', 'companies','from_date','to_date','frm_date','t_date','search_by_comp'));
 	}
 	
-	
-	public function timesheets($id)
-    {
-
+	public function timesheets($id) {
 		$payperiods_dates = payperiods();
-		
 		if(isset($payperiods_dates)){
-			 $frm_date  = $payperiods_dates[0]['frm_date'];
-			 $t_date = $payperiods_dates[0]['t_date'];
-			 $sfrm_date  = $payperiods_dates[1]['sfrm_date'];
-			 $st_date = $payperiods_dates[1]['st_date'];
+			$frm_date  = $payperiods_dates[0]['frm_date'];
+			$t_date = $payperiods_dates[0]['t_date'];
+			$sfrm_date  = $payperiods_dates[1]['sfrm_date'];
+			$st_date = $payperiods_dates[1]['st_date'];
 		}else{
 			$frm_date  = "";
 			$t_date = "";
@@ -210,15 +185,11 @@ class UserInfoController extends Controller
 		$data = TimeSheet::with('companies')->whereBetween('hours_day', array($sfrm_date, $st_date))->where('users_id', '=', $id)->orderBy('created_at', 'DESC')->get();
 		$payperiods_dates1 = Payperiods::orderBy('created_at', 'DESC')->get();
         $companies = Company::orderBy('display_order', 'ASC')->get();
-		//$companies = Company::orderBy('company', 'ASC')->get();
 		return view('admin.timesheet.ts_view',compact('data', 'id','name','frm_date','t_date','companies','payperiods_dates1'));
     }
 	
-	public function timesheets_company($id,$frm_dt,$to_dt,$search_by_comp)
-    {
-
+	public function timesheets_company($id,$frm_dt,$to_dt,$search_by_comp) {
 		$payperiods_dates = payperiods();
-		
 		if(isset($payperiods_dates)){
 			 $frm_date  = $payperiods_dates[0]['frm_date'];
 			 $t_date = $payperiods_dates[0]['t_date'];
@@ -230,7 +201,6 @@ class UserInfoController extends Controller
 			$sfrm_date  = "";
 			$st_date = "";
 		}
-		
 		if(!empty($frm_dt) && !empty($to_dt)){
 			$frm_date = $frm_dt;
 			$t_date = $to_dt;
@@ -245,20 +215,17 @@ class UserInfoController extends Controller
 		return view('admin.timesheet.ts_view',compact('data', 'id','name','frm_date','t_date','search_by_comp'));
     }
 	
-	public function musers($id)
-    {
+	public function musers($id) {
 		$user = UserManager::with('users')->where("musers_id", "=", $id)->orderBy('created_at', 'DESC')->get();
 		return view('admin.musers.muser_view',compact('user', 'id'));
     }
 	
-	public function mcreate($id)
-    {
+	public function mcreate($id) {
 		$user = User::where("role", "=", "user")->orderBy('created_at', 'DESC')->get();
         return view('admin.musers.muser_add', compact('user','id'));
     }
 	
-	 public function mstore(Request $request)
-    {
+	public function mstore(Request $request) {
 		$rules = [
 			'user_id'    =>  'required',
 		];
@@ -271,19 +238,15 @@ class UserInfoController extends Controller
 				'musers_id' => $request->muser_id,
 				'users_id' => $request->user_id,
 		);
-		
 		$muser_store = UserManager::create($form_data);
-			
 		if($muser_store){
 			return redirect('/user/musers/'.$request->muser_id)->with(['success' => 'User Added Successfully!!']);
 		}else{
 			return redirect()->back()->with(['success' => 'Error while creating User!!']);
 		}
-		
     }
 	
-	 public function mdestroy($id)
-    {
+    public function mdestroy($id) {
         $data = UserManager::findOrFail($id);
         $data->delete();
     }
@@ -294,8 +257,7 @@ class UserInfoController extends Controller
      *
      * @return void
      */
-    public function resetpassword($id)
-    {
+    public function resetpassword($id) {
 		$data = User::where('id', '=', $id)->get();
 		return view('admin.users.user_change_pass', compact('data', 'id'));
     }
@@ -310,7 +272,6 @@ class UserInfoController extends Controller
         ]);
 		//update user password
 		$user = User::where('id', '=', $request->hidden_id)->first(); 
-
 		if(!Hash::check($request['current_password'], $user->password)){
 			return back()->with('Pass_Success','Password does not match');
 		} else {
@@ -333,8 +294,7 @@ class UserInfoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
+    public function create() {
 		$department = Department::orderBy('department', 'ASC')->get();
 		$companies = Company::orderBy('created_at', 'DESC')->get();
         return view('admin.users.user_add',compact('department','companies'));
@@ -346,8 +306,7 @@ class UserInfoController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
 		$rules = [
 			'first_name'     =>  'required',
 			'email'    =>  'required|email|unique:users',
@@ -385,25 +344,25 @@ class UserInfoController extends Controller
 		$date    = explode('-', $request->hours_day);
 		$date = implode("_", $date);
 		$form_data = array(
-				'name' => $name,
-				'username' => $request->username,
-				'first_name' => $request->first_name,
-				'last_name' => $request->last_name,
-				'emp_id' => $request->emp_id,
-				'dob' => $date,
-				'phone_no' => $request->phone_no,
-				'ssn_no' => $request->ssn_no,
-				'phone_no' => $request->phone_no,
-				'child_sup' => $request->child_sup,
-				'health_insurance' => $request->health_insurance,
-				'email' => $request->email,
-				'role' => $request->role,
-				'dept' => $request->dept,
-				'status'     =>  $request->status,
-				'companies_id' => $company_nm,
-				'hourst_rate' => $request->hour_rate,
-				'password' => Hash::make($request->password),
-				'pass' => $request->password,
+			'name' => $name,
+			'username' => $request->username,
+			'first_name' => $request->first_name,
+			'last_name' => $request->last_name,
+			'emp_id' => $request->emp_id,
+			'dob' => $date,
+			'phone_no' => $request->phone_no,
+			'ssn_no' => $request->ssn_no,
+			'phone_no' => $request->phone_no,
+			'child_sup' => $request->child_sup,
+			'health_insurance' => $request->health_insurance,
+			'email' => $request->email,
+			'role' => $request->role,
+			'dept' => $request->dept,
+			'status'     =>  $request->status,
+			'companies_id' => $company_nm,
+			'hourst_rate' => $request->hour_rate,
+			'password' => Hash::make($request->password),
+			'pass' => $request->password,
 		);
 				
 		$user_store = User::create($form_data);
@@ -421,14 +380,11 @@ class UserInfoController extends Controller
 				return redirect('/managers')->with(['success' => 'Manager Created Successfully!!']);
 			}elseif($request->role == "supervisor"){
 				return redirect('/supervisors')->with(['success' => 'Supervisor Created Successfully!!']);
-			}
-			
+			}	
 		}else{
 			return redirect()->back()->with(['success' => 'Error while creating User!!']);
 		}
-		
     }
-	
 	
     /**
      * Display the specified resource.
@@ -436,8 +392,7 @@ class UserInfoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
+    public function show($id) {
         //
     }
 
@@ -448,8 +403,7 @@ class UserInfoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
+    public function edit($id) {
 		$alluser = User::where("role", "=", "user")->orderBy('name', 'ASC')->get();
 		$department = Department::orderBy('department', 'ASC')->get();
 		$companies = Company::orderBy('created_at', 'DESC')->get();
@@ -457,8 +411,7 @@ class UserInfoController extends Controller
 		$company_id = UserManager::where('musers_id', '=', $id)->get();
 		$UserSupervisorRel = UserSupervisorRel::where('supervisor_id', '=', $id)->get();
 		$UserCasemanagerRel = UserCasemanagerRel::where('casemanager_id', '=', $id)->get();
-		return view('admin.users.user_edit',compact('data','department','companies','company_id','alluser','UserSupervisorRel','UserCasemanagerRel'));
-		
+		return view('admin.users.user_edit',compact('data','department','companies','company_id','alluser','UserSupervisorRel','UserCasemanagerRel'));	
     }
 	
 	/**
@@ -468,9 +421,7 @@ class UserInfoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
-    {
-
+    public function update(Request $request) {
 		$rules = [
 			'first_name'     =>  'required',
 			'email'    =>  'required|email',
@@ -591,15 +542,12 @@ class UserInfoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
+    public function destroy($id) {
         $data = User::findOrFail($id);
         $data->delete();
     }
 	
-	public function user_search(Request $request)
-    {
-
+	public function user_search(Request $request) {
 		$searchTerm = $request->srch_user;
 		$data = User::where('role', 'user')
 						->where('name', 'LIKE', "%{$searchTerm}%") 
@@ -609,7 +557,7 @@ class UserInfoController extends Controller
 						->get();
 								//dd($data);die();
 			if(isset($data)){
-$count = 1; 
+          $count = 1; 
 			  if($data->count() != 0){
 				foreach ($data as $datas){
 					$approved_by = $this->approved_by($datas->id); 

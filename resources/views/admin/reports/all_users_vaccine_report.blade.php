@@ -65,8 +65,7 @@
 								<td> <?php if($datas->covid_report != null && $datas->covid_report != '0' ){ ?>
 								<img style=" margin-top: 15px; width: 152px;height: 156px;border-radius: inherit !important;" src="{{ url('/assets/uploads/covid-report') }}/{{ $datas->covid_report }}">
 								<?php } else{ ?>
-									<p>No Report Found!</p>
-									
+									<p class="no-data">No Report found!</p>	
 								<?php } ?> </td>
 								</tr>
 							<?php $count++; ?>

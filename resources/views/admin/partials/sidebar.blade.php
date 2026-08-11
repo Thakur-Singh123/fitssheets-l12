@@ -27,35 +27,35 @@
             </li>
 			<?php if(Auth::user()->id == 72 || Auth::user()->id == 50 ){ ?>
 			<?php }else{ ?>
-		@php
-$adminReportsActive = request()->is(
-    'all/users/vaccine/report',
-    'all/applicants/view',
-    'all/new-applicants/view',
-    'all/applicants-without_id/view',
-    'all/user-lst_login_logout/view',
-    'inactive/employees/view',
-    'all/users/view',
-    'all/users/id/view',
-    'all/users/sign_signout/view',
-    'all/users/all_app_timesheet/view',
-    'all/supervisor/users/view',
-    'all/payperiod/search',
-    'user/payroll/report',
-    'user/finace/report'
-);
-@endphp
+      @php
+  $adminReportsActive = request()->is(
+      'all/users/vaccine/report',
+      'all/applicants/view',
+      'all/new-applicants/view',
+      'all/applicants-without_id/view',
+      'all/user-lst_login_logout/view',
+      'inactive/employees/view',
+      'all/users/view',
+      'all/users/id/view',
+      'all/users/sign_signout/view',
+      'all/users/all_app_timesheet/view',
+      'all/supervisor/users/view',
+      'all/payperiod/search',
+      'user/payroll/report',
+      'user/finace/report'
+  );
+  @endphp
 
-<li class="nav-item {{ $adminReportsActive ? 'active' : '' }}">
-    <a class="nav-link"
-       data-toggle="collapse"
-       href="#ui-areports"
-       aria-expanded="{{ $adminReportsActive ? 'true' : 'false' }}"
-       aria-controls="ui-areports">
-        <i class="menu-icon typcn typcn-coffee"></i>
-        <span class="menu-title">Admin Reports</span>
-        <i class="menu-arrow"></i>
-    </a>
+  <li class="nav-item {{ $adminReportsActive ? 'active' : '' }}">
+      <a class="nav-link"
+        data-toggle="collapse"
+        href="#ui-areports"
+        aria-expanded="{{ $adminReportsActive ? 'true' : 'false' }}"
+        aria-controls="ui-areports">
+          <i class="menu-icon typcn typcn-coffee"></i>
+          <span class="menu-title">Admin Reports</span>
+          <i class="menu-arrow"></i>
+      </a>
 
     <div class="collapse {{ $adminReportsActive ? 'show' : '' }}" id="ui-areports">
         <ul class="nav flex-column sub-menu">
@@ -207,26 +207,49 @@ $adminReportsActive = request()->is(
         </ul>
     </div>
 </li>
-            <li  class="nav-item">
-              <a class="nav-link" data-toggle="collapse" href="#ui-vaccation" aria-expanded="false" aria-controls="ui-basic">
-                <i class="menu-icon typcn typcn-coffee"></i>
-                <span class="menu-title">Vaccation Time</span>
-                <i class="menu-arrow"></i>
-              </a>
-              <div class="collapse" id="ui-vaccation">
-                <ul class="nav flex-column sub-menu">
-                  <li class="nav-item">
-                    <a class="nav-link" href="{{ route('vaccations.index') }}">All Vaccation</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="{{ route('vaccations.create') }}">Add Vaccation</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="{{ url('/approve/vaccation/hours') }}">Approve Vaccation</a>
-                  </li>
-                </ul>
-              </div>
-            </li>
+          <li class="nav-item {{ request()->routeIs('vaccations.*') || request()->is('approve/vaccation/hours') ? 'active-submenu' : '' }}">
+
+  <a class="nav-link"
+   data-toggle="collapse"
+   href="#ui-vaccation"
+   aria-expanded="{{ request()->routeIs('vaccations.*') || request()->is('approve/vaccation/hours') ? 'true' : 'false' }}"
+   aria-controls="ui-vaccation">
+
+    <i class="menu-icon typcn typcn-coffee"></i>
+    <span class="menu-title">Vaccation Time</span>
+    <i class="menu-arrow"></i>
+</a>
+
+<div class="collapse {{ request()->routeIs('vaccations.*') || request()->is('approve/vaccation/hours') ? 'show' : '' }}"
+     id="ui-vaccation">
+
+    <ul class="nav flex-column sub-menu">
+              <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('vaccations.create') ? 'active-submenu' : '' }}"
+               href="{{ route('vaccations.create') }}">
+                Add Vaccation
+            </a>
+        </li>
+
+
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('vaccations.index') || request()->is('vaccations/*/edit') ? 'active-submenu' : '' }}"
+               href="{{ route('vaccations.index') }}">
+                All Vaccations
+            </a>
+        </li>
+
+
+        <li class="nav-item">
+            <a class="nav-link {{ request()->is('approve/vaccation/hours') ? 'active-submenu' : '' }}"
+               href="{{ url('/approve/vaccation/hours') }}">
+                Approve Vaccations
+            </a>
+        </li>
+
+    </ul>
+</div>
+</li>
 			<li class="nav-item">
               <a class="nav-link" data-toggle="collapse" href="#ui-holiday" aria-expanded="false" aria-controls="ui-basic">
                 <i class="menu-icon typcn typcn-coffee"></i>

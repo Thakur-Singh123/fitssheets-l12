@@ -20,7 +20,7 @@ use App\Models\AdminMeta;
 use Carbon\Carbon;
 use App\Models\LoginLogouttime;
 use DateTime;
-use App\Payperiods;
+use App\Models\Payperiods;
 use Twilio\Rest\Client;
 use App\Models\UserVaccatioStatusn;
 use App\Models\UserVaccation;
@@ -179,145 +179,153 @@ class AdminController extends Controller
 			}
 		}
 	}
-	
-	
 
-	 public function approve_vchour()
-    {
-		$approve_vchour = UserVaccatioStatusn::orderBy('created_at', 'DESC')->get();
-		// $user = User::where("role", "=", "user")->orderBy('created_at', 'DESC')->get();
+	//Function for voccation view
+	public function vaccation_view(Request $request) {
+		//Get user vaccation
+		$data = UserVaccatioStatusn::find($request->id);
+		return view('admin.vaccation-view', compact('data'));
+	}
+
+	public function approve_vchour() {
+		$approve_vchour = UserVaccatioStatusn::orderBy('created_at', 'DESC')->paginate(10);
         return view('admin.approve_vchour',compact('approve_vchour'));
     }
 
-    public function vacc_approve(Request $request)
-    {
+	public function vacc_approve(Request $request) {
 		$vacc_id = $request->vacc_id;
-		$app_id = $request->app_id;
-		$data_user_vacc = UserVaccatioStatusn::where('id','=', $vacc_id)->orderBy('created_at', 'DESC')->first();
-		if(isset($data_user_vacc) && $data_user_vacc->vacc_status != 1){
-			$vacc_user = $data_user_vacc->user_id;
-			
-			$data_vacc = UserVaccation::where('user_id','=', $vacc_user)->orderBy('created_at', 'DESC')->first();
+		$app_id  = $request->app_id;
 
-			$vacc_frm    = explode('_', $data_user_vacc->vacc_start);
-			$vacc_frm = implode("-", $vacc_frm);
-			$vacc_to    = explode('_', $data_user_vacc->vacc_end);
-			$vacc_to = implode("-", $vacc_to);
-			$date1 = new DateTime(date('m/d/y', strtotime($vacc_frm)));
-			$date2 = new DateTime(date('m/d/y', strtotime($vacc_to)));
-
-			$diff = $date2->diff($date1);
-
-			$days = $diff->days;
-			$hours = $diff->h;
-			$hours = $hours + ($diff->days*24);
-			$hours = floatval(8*$days);
-			// return $hours;
-			// 	die;
-			if(isset($data_vacc)){
-				$used_hours = $data_vacc->vacc_vc;
-				$avail_hours = $data_vacc->vacc_sl;
-				$hours_requested = $hours;
-				$check_hours = $avail_hours - $hours_requested;
-				// return $check_hours;
-				// die;
-				if($check_hours >= 0){
-					$used_hours = $used_hours + $hours_requested;
-					$avail_hours = $avail_hours - $hours_requested;
-					
-					$form_data = array(
-						'vacc_sl' => $avail_hours,
-						'vacc_vc' => $used_hours,
-						'vacc_aprby' => $app_id,
-					);
-					$form_dat1 = array(
-						'vacc_status' => 1,
-						
-					);
-					$user_update = UserVaccation::where('user_id','=', $vacc_user)->update($form_data);
-					$user_status_update = UserVaccatioStatusn::where('user_id','=', $vacc_user)->update($form_dat1);
-					if($user_update){
-						return "Vaccation Approved";
-
-					}else{
-						return "Error!";
-					}
-				}else{
-					return 'Vaccation hours are not left or have used your all hours for this user.';
-				}	
-			}else{
-					return 'Vaccation hours are not assign to this user, please contact admin';
-			}
-		}else{
-			return "Action is already taken!!";
+		$data_user_vacc = UserVaccatioStatusn::where('id', $vacc_id)->first();
+		if (!$data_user_vacc) {
+			return response()->json([
+				'status'  => false,
+				'message' => 'Vacation request not found.'
+			], 404);
 		}
-		
-    }
+		if ($data_user_vacc->vacc_status == 1) {
+			return response()->json([
+				'status'  => false,
+				'type'    => 'already_approved',
+				'message' => 'This vacation is already approved. Please decline it first, then approve again.'
+			]);
+		}
+		$vacc_user = $data_user_vacc->user_id;
+		$data_vacc = UserVaccation::where('user_id', $vacc_user)
+			->orderBy('created_at', 'DESC')
+			->first();
+		if (!$data_vacc) {
+			return response()->json([
+				'status'  => false,
+				'message' => 'Vacation hours are not assigned to this user. Please contact admin.'
+			]);
+		}
+		$vacc_frm = explode('_', $data_user_vacc->vacc_start);
+		$vacc_frm = implode('-', $vacc_frm);
+		$vacc_to = explode('_', $data_user_vacc->vacc_end);
+		$vacc_to = implode('-', $vacc_to);
+		$date1 = new DateTime(date('m/d/Y', strtotime($vacc_frm)));
+		$date2 = new DateTime(date('m/d/Y', strtotime($vacc_to)));
+		$diff = $date2->diff($date1);
+		$days = $diff->days;
+		$hours = floatval(8 * $days);
 
-    public function vacc_decline(Request $request)
-    {
+		$used_hours  = floatval($data_vacc->vacc_vc ?? 0);
+		$avail_hours = floatval($data_vacc->vacc_sl ?? 0);
+		$hours_requested = $hours;
+		$check_hours = $avail_hours - $hours_requested;
+		if ($check_hours < 0) {
+			return response()->json([
+				'status'  => false,
+				'message' => 'Vacation hours are not left or the user has used all available hours.'
+			]);
+		}
+		$used_hours  = $used_hours + $hours_requested;
+		$avail_hours = $avail_hours - $hours_requested;
+		$form_data = [
+			'vacc_sl'    => $avail_hours,
+			'vacc_vc'    => $used_hours,
+			'vacc_aprby' => $app_id,
+			
+		];
+		$form_status = [
+			'vacc_status' => 1,
+			'vacc_aprby'  => $app_id,
+		];
+
+		$user_update = UserVaccation::where('user_id', $vacc_user)
+			->update($form_data);
+
+		$user_status_update = UserVaccatioStatusn::where('id', $vacc_id)
+			->update($form_status);
+
+		if ($user_status_update) {
+
+			return response()->json([
+				'status'  => true,
+				'message' => 'Vacation Approved Successfully.'
+			]);
+		}
+
+		return response()->json([
+			'status'  => false,
+			'message' => 'Error while approving vacation.'
+		], 500);
+	}
+
+	public function vacc_decline(Request $request) {
 		$vacc_id = $request->vacc_id;
-		$app_id = $request->app_id;
-		$data_user_vacc = UserVaccatioStatusn::where('id','=', $vacc_id)->orderBy('created_at', 'DESC')->first();
-		if(isset($data_user_vacc) && $data_user_vacc->vacc_status != 1){
-			$vacc_user = $data_user_vacc->user_id;
-			
-			$data_vacc = UserVaccation::where('user_id','=', $vacc_user)->orderBy('created_at', 'DESC')->first();
+		$app_id  = $request->app_id;
 
-			$vacc_frm    = explode('_', $data_user_vacc->vacc_start);
-			$vacc_frm = implode("-", $vacc_frm);
-			$vacc_to    = explode('_', $data_user_vacc->vacc_end);
-			$vacc_to = implode("-", $vacc_to);
-			$date1 = new DateTime(date('m/d/y', strtotime($vacc_frm)));
-			$date2 = new DateTime(date('m/d/y', strtotime($vacc_to)));
-
-			$diff = $date2->diff($date1);
-
-			$days = $diff->days;
-			$hours = $diff->h;
-			$hours = $hours + ($diff->days*24);
-			$hours = floatval(8*$days);
-
-			if(isset($data_vacc)){
-				$used_hours = $data_vacc->vacc_vc;
-				$avail_hours = $data_vacc->vacc_sl;
-				$hours_requested = $hours;
-				$check_hours = $avail_hours - $hours_requested;
-				if($check_hours >= 0){
-					$used_hours = $used_hours + $hours_requested;
-					$avail_hours = $avail_hours - $hours_requested;
-					
-					$form_data = array(
-						'vacc_sl' => $avail_hours,
-						'vacc_vc' => $used_hours,
-						'vacc_aprby' => $app_id,
-					);
-					$form_dat1 = array(
-						'vacc_status' => 2,
-						// 'vacc_aprby' => $app_id,
-					);
-					// $user_update = UserVaccation::where('user_id','=', $vacc_user)->update($form_data);
-					$user_status_update = UserVaccatioStatusn::where('user_id','=', $vacc_user)->update($form_dat1);
-					if($user_status_update){
-						return "Vaccation Decline";
-
-					}else{
-						return "Error!";
-					}
-				}else{
-					return 'Vaccation hours are not left or have used your all hours for this user.';
-				}	
-			}else{
-					return 'Vaccation hours are not assign to this user, please contact admin';
-			}
-		}else{
-			return "Action is already taken!!";
+		$data_user_vacc = UserVaccatioStatusn::where('id', $vacc_id)->first();
+		if (!$data_user_vacc) {
+			return response()->json([
+				'status'  => false,
+				'message' => 'Vacation request not found.'
+			], 404);
 		}
-		
-    }
+		if ($data_user_vacc->vacc_status == 2) {
+			return response()->json([
+				'status'  => false,
+				'type'    => 'already_declined',
+				'message' => 'This vacation is already declined. Please approve it first, then decline again.'
+			]);
+		}
+		$vacc_user = $data_user_vacc->user_id;
+		$data_vacc = UserVaccation::where('user_id', $vacc_user)->orderBy('created_at', 'DESC')->first();
+		if (!$data_vacc) {
+			return response()->json([
+				'status'  => false,
+				'message' => 'Vacation hours are not assigned to this user. Please contact admin.'
+			]);
+		}
+		$vacc_frm = explode('_', $data_user_vacc->vacc_start);
+		$vacc_frm = implode('-', $vacc_frm);
+		$vacc_to = explode('_', $data_user_vacc->vacc_end);
+		$vacc_to = implode('-', $vacc_to);
+		$date1 = new DateTime(date('m/d/Y', strtotime($vacc_frm)));
+		$date2 = new DateTime(date('m/d/Y', strtotime($vacc_to)));
+		$diff = $date2->diff($date1);
+		$days = $diff->days;
+		$hours = floatval(8 * $days);
+		$form_status = [
+			'vacc_status' => 2,
+			'vacc_aprby'  => $app_id,
+		];
+		$user_status_update = UserVaccatioStatusn::where('id', $vacc_id)->update($form_status);
+		if ($user_status_update) {
+			return response()->json([
+				'status'  => true,
+				'message' => 'Vacation Declined Successfully.'
+			]);
+		}
+		return response()->json([
+			'status'  => false,
+			'message' => 'Error while declining vacation.'
+		], 500);
+	}
 
-    public static function avail_vacchours($id)
-    {
+    public static function avail_vacchours($id) {
     	$avail_vacchours = UserVaccation::where("user_id", "=", $id)->orderBy('created_at', 'DESC')->get();
     	return $avail_vacchours;
     }
@@ -502,7 +510,7 @@ class AdminController extends Controller
 	
 	
 	public function all_users_view(){
-		$users = User::where('role', '=', "user")->orderBy('created_at', 'DESC')->get();
+		$users = User::where('role', '=', "user")->orderBy('created_at', 'DESC')->paginate(10);
 		return view('admin.reports.all_users_view',compact('users'));
 	}
 	
@@ -582,8 +590,7 @@ class AdminController extends Controller
 	}
 	
 	public function all_users_with_id_view(){
-		
-		$users = User::where('role', '=', "user")->orderBy('created_at', 'DESC')->get();
+		$users = User::where('role', '=', "user")->orderBy('created_at', 'DESC')->paginate(10);
 		return view('admin.reports.all_users_with_id_view',compact('users'));
 	}
 	
@@ -613,15 +620,14 @@ class AdminController extends Controller
 	}
 	
 	public function sign_signout_view(){
-		$LoginLogouttime = LoginLogouttime::orderBy('created_at', 'DESC')->get();
+		$LoginLogouttime = LoginLogouttime::orderBy('created_at', 'DESC')->paginate(10);
 		return view('admin.reports.sign_signout_view',compact('LoginLogouttime'));
 	}
 	
-		//All user Log out/Log In
+	//All user Log out/Log In
 	public function sign_signout(){
-		
 		$LoginLogouttime = LoginLogouttime::orderBy('created_at', 'DESC')->get();
-		
+
 		$users_report[] = array('#','Emp ID', 'Last Name','First Name','Name','Type','Status', 'Date', 'Time');
 		$user_count = 1;
 		if(isset($LoginLogouttime)){
@@ -662,7 +668,7 @@ class AdminController extends Controller
 	}
 	
 	public function all_app_timesheet_view(){
-		$user = User::where('role', '=', "user")->orderBy('name', 'DESC')->paginate(15);
+		$user = User::where('role', '=', "user")->orderBy('name', 'DESC')->get();
 		//dd($user);
 		return view('admin.reports.all_app_timesheet_view',compact('user'));
 	}
@@ -804,7 +810,7 @@ class AdminController extends Controller
 	}
 	
 	public function all_supervisor_assign_user_view(){
-		$supervisor = User::where('role', '=', "supervisor")->orderBy('name', 'DESC')->get();
+		$supervisor = User::where('role', '=', "supervisor")->orderBy('name', 'DESC')->paginate(10);
 		return view('admin.reports.all_supervisor_assign_user_view',compact('supervisor'));
 	}
 	
@@ -975,9 +981,8 @@ class AdminController extends Controller
 		
 	}
 	//finace report
-	public static function finacereport()
-    {
-        $data = User::with('companies')->where("role", "=", "user")->orderBy('name', 'ASC')->paginate(15);
+	public static function finacereport() {
+        $data = User::with('companies')->where("role", "=", "user")->orderBy('name', 'ASC')->paginate(10);
 		//dd($data);
 		$Supervisor_color = User::where("role", "=", "supervisor")->orderBy('name', 'ASC')->get();
 		$payperiods_dates = Payperiods::orderBy('created_at', 'DESC')->get();
@@ -1067,10 +1072,11 @@ class AdminController extends Controller
 			$data = "";
 		}
 		
-		$time_sheet_users =array();
-		if(isset($data)){
-			
+			$time_sheet_users = array();
 			$count = 1;
+			$hasRows = false;
+
+			if($data->isNotEmpty()){
 			foreach($data as $datas)
 			{	
 				$time_sheet_users[] = $datas->users_id;
@@ -1154,15 +1160,17 @@ class AdminController extends Controller
                 		}
 					// echo $holiday_time;
 					if(isset($total_time) && $total_time > 0){
+						$hasRows = true;
 						echo "<tr>";
-					  echo "<td>".$entry_date."</td>";
-					 echo "<td>".$user_pays->emp_id."</td>";
-					  echo "<td>".$user_pays->last_name."</td>";
-					  echo "<td>".$user_pays->first_name."</td>";
-					   echo "<td>01</td>";
-					   echo "<td>".$total_time."</td>";
-					  echo "<td>".$user_pays->hourst_rate."</td>";
-					echo "</tr>";
+						echo "<td>".$count++."</td>";
+						echo "<td>".$entry_date."</td>";
+						echo "<td>".$user_pays->emp_id."</td>";
+						echo "<td>".$user_pays->last_name."</td>";
+						echo "<td>".$user_pays->first_name."</td>";
+						echo "<td>01</td>";
+						echo "<td>".$total_time."</td>";
+						echo "<td>".$user_pays->hourst_rate."</td>";
+						echo "</tr>";
 					}
 					if(isset($holiday_time) && $holiday_time > 0){
 					    foreach($holiday_dt_arr as $holiday_dt_ar){
@@ -1196,11 +1204,11 @@ class AdminController extends Controller
 				}
 			}
 		}else{
-			echo "No Timesheet for serached Payperiod!";
+			echo '<tr>';
+			echo '<td colspan="8" class="no-data">No Timesheet for serached Payperiod!</td>';
+			echo '</tr>';
 		}
-		
 	}
-	
 	
 	public function csv_post_ddata($payperiod,$search_by_comp){
 		//dd($payperiod);die();
@@ -2052,9 +2060,8 @@ class AdminController extends Controller
 		
 	}
 	
-	
 	public function all_applicants_without_id_view(){
-		$users = User::where('role', '=', "user")->whereNotIn('id', [276])->orderBy('name', 'ASC')->get();
+		$users = User::where('role', '=', "user")->whereNotIn('id', [276])->orderBy('name', 'ASC')->paginate(10);
 		return view('admin.reports.all_user_without_id',compact('users'));
 	}
 	
@@ -2089,7 +2096,7 @@ class AdminController extends Controller
 	}
 	
 	public function all_user_lst_login_logout_view(){
-		$users = User::where('role', '=', "user")->whereNotIn('id', [276])->orderBy('name', 'ASC')->get();
+		$users = User::where('role', '=', "user")->whereNotIn('id', [276])->orderBy('name', 'ASC')->paginate(10);
 		return view('admin.reports.user_last_login_logout',compact('users'));
 	}
 	
@@ -2130,7 +2137,7 @@ class AdminController extends Controller
 	}
 	
 	public function inactive_employees_view(){
-		$users = User::where('role', '=', "user")->whereNotIn('id', [276])->orderBy('name', 'ASC')->get();
+		$users = User::where('role', '=', "user")->whereNotIn('id', [276])->orderBy('name', 'ASC')->paginate(10);
 		return view('admin.reports.inactive_employees_view',compact('users'));
 	}
 	
@@ -2140,7 +2147,7 @@ class AdminController extends Controller
 		$to_month  = $request->to_month;
 		
 		
-		$users = User::where('role', '=', "user")->whereNotIn('id', [276])->orderBy('name', 'ASC')->get();
+		$users = User::where('role', '=', "user")->whereNotIn('id', [276])->orderBy('name', 'ASC')->paginate(10);
 		$count = 1;
 
 		if(isset($users)){
@@ -2314,21 +2321,24 @@ class AdminController extends Controller
 	}
 	
 	
-	public static function user_info( $id ){
+	public static function user_info($id){
 		$user = User::where('id', '=', $id)->first();
 		return $user;
 	}
 	
 	
-	public static function timesheet_data( $id ){
+	public static function timesheet_data($id){
 		$data = TimeSheet::with('companies')->with('users')->with('houses')->where('approve', '=', 2)->where('users_id', '=', $id)->orderBy('hours_day', 'DESC')->get();
 		return $data;
 	}
 	
 	
-	public static function UserManager( $id ){
+	public static function UserManager($id){
 		$UserManager = UserManager::where('musers_id', '=', $id)->first();
-		$company_id = $UserManager->users_id;
+		if (!$UserManager) {
+			return collect();
+		}
+		$company_id = $UserManager->users_id; 
 		$company = Company::where('id', '=', $company_id)->first();
 		$user = User::where('role', '=', "user")->where('companies_id', '=', $company->company)->orderBy('name', 'DESC')->get();
 		return $user;

@@ -159,8 +159,9 @@ Route::group(['middleware' => 'auth'], function () {
 		Route::resource('vaccations', 'Admin\VaccationController');
 		Route::post('vaccations/store', 'Admin\VaccationController@store')->name('vaccations.store');
 		Route::post('vaccations/update', 'Admin\VaccationController@update')->name('vaccations.update');
-		Route::get('vaccations/destroy/{id}', 'Admin\VaccationController@destroy');
+		Route::get('vaccation/destroy', 'Admin\VaccationController@destroy');
 		//Approve Vacc Hours
+		Route::get('auser/vaccation/view', 'Admin\AdminController@vaccation_view');
 		Route::get('approve/vaccation/hours', 'Admin\AdminController@approve_vchour');
 		Route::get('user/vaccation/approve', 'Admin\AdminController@vacc_approve');
 		Route::get('user/vaccation/decline', 'Admin\AdminController@vacc_decline');

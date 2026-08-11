@@ -1,5 +1,4 @@
 @extends('layouts.master')
-
 @section('content')
 <?php use App\Http\Controllers\Admin\AdminController; ?>
 <style>

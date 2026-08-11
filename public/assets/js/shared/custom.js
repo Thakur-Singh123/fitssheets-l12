@@ -1897,63 +1897,115 @@ $(document).on('click','#nttime_view', function(e){
 		});		
 });
 
+$(document).on('click', '#vacc_aaprove', function(e) {
+    e.preventDefault();
+    var baseUrl = $(this).attr('data-baseURL');
+    var vacc_id = $(this).attr('data-uid');
+    var app_id  = $(this).attr('data-uaid');
 
-$(document).on('click','#vacc_aaprove', function(e){
-	e.preventDefault();
-	var baseUrl = $(this).attr('data-baseURL');
-	var vacc_id = $(this).attr('data-uid');
-	var app_id = $(this).attr('data-uaid');
-	if(confirm('Are you sure you want to approve vaccation for this User?')){
-		$(".loding").hide();
-		$.ajax({
-			url: baseUrl+"/user/vaccation/approve",
-			method: "GET",
-			data: {vacc_id:vacc_id,app_id:app_id,_token: '{{csrf_token()}}'},
-			beforeSend:function(){
-				$(".loding").show();
-			},
-			success:function(data){
-				$(".loding").hide();
-	            // window.location = ur;
-				alert(data);
-				// console.log(data);
-				// $("#result2").html(data);
-			}
-		});
-	}else{
-		return false;
-	}			
+    Swal.fire({
+        title: 'Approve Vacation?',
+        text: 'Are you sure you want to approve this vacation?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, Approve',
+        cancelButtonText: 'Cancel',
+        confirmButtonColor: '#28a745',
+        cancelButtonColor: '#6c757d'
+    }).then((result) => {
+        if (!result.isConfirmed) {
+            return;
+        }
+        $.ajax({
+            url: baseUrl + "/user/vaccation/approve",
+            type: "GET",
+            data: {
+                vacc_id: vacc_id,
+                app_id: app_id
+            },
+            beforeSend: function() {
+                $(".loding").show();
+            },
+            success: function(response) {
+                $(".loding").hide();
+                if (response.status === true) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Approved!',
+                        text: response.message,
+                        confirmButtonColor: '#28a745'
+                    }).then(() => {
+                        location.reload();
+                    });
+                } else {
+
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Already Processed',
+                        text: response.message,
+                        confirmButtonColor: '#3085d6'
+                    });
+                }
+            },
+        });
+    });
 });
 
-$(document).on('click','#vacc_decline', function(e){
-	e.preventDefault();
-	var baseUrl = $(this).attr('data-baseURL');
-	var vacc_id = $(this).attr('data-uid');
-	var app_id = $(this).attr('data-uaid');
-	if(confirm('Are you sure you want to decline vaccation for this User?')){
-		$(".loding").hide();
-		$.ajax({
-			url: baseUrl+"/user/vaccation/decline",
-			method: "GET",
-			data: {vacc_id:vacc_id,app_id:app_id,_token: '{{csrf_token()}}'},
-			beforeSend:function(){
-				$(".loding").show();
-			},
-			success:function(data){
-				$(".loding").hide();
-	            // window.location = ur;
-				alert(data);
-				// console.log(data);
-				// $("#result2").html(data);
-			}
-		});
-	}else{
-		return false;
-	}			
+$(document).on('click', '#vacc_decline', function(e) {
+    e.preventDefault();
+    var baseUrl = $(this).attr('data-baseURL');
+    var vacc_id = $(this).attr('data-uid');
+    var app_id  = $(this).attr('data-uaid');
+
+    Swal.fire({
+        title: 'Decline Vacation?',
+        text: 'Are you sure you want to decline this vacation?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, Decline',
+        cancelButtonText: 'Cancel',
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d'
+    }).then((result) => {
+        if (!result.isConfirmed) {
+            return;
+        }
+        $.ajax({
+            url: baseUrl + "/user/vaccation/decline",
+            type: "GET",
+            data: {
+                vacc_id: vacc_id,
+                app_id: app_id
+            },
+
+            beforeSend: function() {
+                $(".loding").show();
+            },
+            success: function(response) {
+                $(".loding").hide();
+                if (response.status === true) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Declined!',
+                        text: response.message,
+                        confirmButtonColor: '#dc3545'
+                    }).then(() => {
+                        location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Already Processed',
+                        text: response.message,
+                        confirmButtonColor: '#3085d6'
+                    });
+                }
+            },
+        });
+    });
 });
 
 $(document).on('click','#svacc_view',function(){
-
     var id=$(this).data('uid');
     var baseUrl=$(this).data('baseurl');
 
@@ -1965,7 +2017,20 @@ $(document).on('click','#svacc_view',function(){
             $('#myModal .modal-body').html(response);
         }
     });
+});
 
+$(document).on('click','#vacc_view',function(){
+    var id=$(this).data('uid');
+    var baseUrl=$(this).data('baseurl');
+
+    $.ajax({
+        url: baseUrl+'/auser/vaccation/view',
+        type:'GET',
+        data:{id:id},
+        success:function(response){
+            $('#myModal .modal-body').html(response);
+        }
+    });
 });
 
 $(document).on('click','#svacc_aaprove', function(e){

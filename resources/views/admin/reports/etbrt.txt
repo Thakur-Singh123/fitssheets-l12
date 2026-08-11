@@ -1,0 +1,53 @@
+<tr>
+<td colspan="5" class="no-data">
+    Sorry, No data found!
+</td>
+</tr>
+{{ $users->links('pagination::bootstrap-5') }}
+<td>{{ ($users->currentPage() - 1) * $users->perPage() + $loop->iteration }}.</td>
+
+<th class="sortStyle unsortStyle"> Sr. No<i class="mdi mdi-chevron-down"></i> </th>
+
+<div style="margin: 0px 0px 10px 0px;" align="right">
+
+<div class="table-responsive">
+<table id="sortable-table-1" class="table table-stripe">
+
+   <th class="sortStyle unsortStyle"> Sr. No<i class="mdi mdi-chevron-down"></i> </th>
+
+    @if(session('success'))
+    <div class="alert alert-success">
+        <h4>{{ session('success') }}</h4>
+    </div>
+    @endif
+    @if(session('error'))
+    <div class="alert alert-danger">
+        <h4>{{ session('error') }}</h4>
+    </div>
+    @endif
+
+    //Function for delete payperiod
+    public function destroy(Request $request) {
+		//Get ajax request for payperiod id
+		$payperiod_id = $request->payperiod_id;
+		//Delete payperiods
+		$is_delete_payperiod = Payperiods::where('id', $payperiod_id)->delete();
+		//Check if payperiod record deleted or not
+		if($is_delete_payperiod){
+			echo '<p style="color:green;">Payperiod record deleted successfully.</p>';
+			// Corrected JavaScript code
+			echo '<script>setTimeout(function(){ window.location.href = ""; }, 3000);</script>';
+		} else {
+			echo '<p style="color:green;">Oops something wrong.</p>';
+		}
+    }
+
+    <a
+        style="margin-left: 5px"
+        data-baseURL="{{ url('/') }}"
+        data-vocation_id="{{ $datas->id  }}"
+        class="delete_vocation_record"
+        title="Delete"
+        ><i class="fa fa-trash-o"></i
+    >
+    </a>

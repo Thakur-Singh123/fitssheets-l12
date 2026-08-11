@@ -1,6 +1,7 @@
 @extends('layouts.master')
 
 @section('content')
+
 <?php use App\Http\Controllers\Admin\AdminController; ?>
 <style>
 .table td img:not(.thumb-image), .table th img:not(.thumb-image) {
@@ -18,7 +19,7 @@
 		<div class="card">
 		  <div class="card-body">
 			<h4 class="card-title">All Users Approve timesheet</h4>
-						 <form>
+			<form>
 			@csrf
 			  <div class="row">
 				<div class="col-md-2">
@@ -42,24 +43,26 @@
 			  </div>
 			  
 			</form>
-			<div style="margin-top: 10px;" align="left">
+			<div style="margin: 0px 0px 10px 0px;" align="right">
 				<a href="{{ url('/all/users/all_app_timesheet') }}" id="export" class="btn btn-success">Export to Excel</a>
 		    </div>
-			<table id="sortable-table-1" class="table table-striped table-responsive">
-			  <thead>
+			  <div class="table-responsive">
+               <table id="sortable-table-1 table_id" class="table table-stripe">
+			   <thead>
 				<tr>
-				  <th class="sortStyle unsortStyle"> Emp ID<i class="mdi mdi-chevron-down"></i> </th>
-				  <th class="sortStyle unsortStyle"> Email<i class="mdi mdi-chevron-down"></i> </th>
-				  <th class="sortStyle unsortStyle"> Name<i class="mdi mdi-chevron-down"></i> </th>
-				  <th class="sortStyle unsortStyle"> Department<i class="mdi mdi-chevron-down"></i> </th>
-				  <th class="sortStyle unsortStyle"> Company<i class="mdi mdi-chevron-down"></i> </th>
-				  <th class="sortStyle unsortStyle"> House<i class="mdi mdi-chevron-down"></i> </th>
-				   <th class="sortStyle unsortStyle"> Time In<i class="mdi mdi-chevron-down"></i> </th>
+				   <th class="sortStyle unsortStyle"> Sr. No<i class="mdi mdi-chevron-down"></i> </th>
+				   <th class="sortStyle unsortStyle"> Emp ID<i class="mdi mdi-chevron-down"></i> </th>
+				   <th class="sortStyle unsortStyle"> Email<i class="mdi mdi-chevron-down"></i> </th>
+				   <th class="sortStyle unsortStyle"> Name<i class="mdi mdi-chevron-down"></i> </th>
+				   <th class="sortStyle unsortStyle"> Department<i class="mdi mdi-chevron-down"></i> </th>
+				   <th class="sortStyle unsortStyle"> Company<i class="mdi mdi-chevron-down"></i> </th>
+				   <th class="sortStyle unsortStyle"> House<i class="mdi mdi-chevron-down"></i> </th>
+				    <th class="sortStyle unsortStyle"> Time In<i class="mdi mdi-chevron-down"></i> </th>
 				    <th class="sortStyle unsortStyle"> Time Out<i class="mdi mdi-chevron-down"></i> </th>
-					 <th class="sortStyle unsortStyle"> Hours Worked<i class="mdi mdi-chevron-down"></i> </th>
-					 <th class="sortStyle unsortStyle"> Day<i class="mdi mdi-chevron-down"></i> </th>
-				  <th class="sortStyle unsortStyle"> Hours Rate($)<i class="mdi mdi-chevron-down"></i> </th>
-				   <th class="sortStyle unsortStyle"> Vacation<i class="mdi mdi-chevron-down"></i> </th>
+					<th class="sortStyle unsortStyle"> Hours Worked<i class="mdi mdi-chevron-down"></i> </th>
+					<th class="sortStyle unsortStyle"> Day<i class="mdi mdi-chevron-down"></i> </th>
+				    <th class="sortStyle unsortStyle"> Hours Rate($)<i class="mdi mdi-chevron-down"></i> </th>
+				    <th class="sortStyle unsortStyle"> Vacation<i class="mdi mdi-chevron-down"></i> </th>
 				    <th class="sortStyle unsortStyle"> Approved<i class="mdi mdi-chevron-down"></i> </th>
 				</tr>
 			  </thead>
@@ -93,6 +96,7 @@
 						}
 			?>
 					<tr>
+					<td>{{ $count++ }}.</td>
 					  <td>{{  $time->users->emp_id  }}</td>
 					   <td>{{  $time->users->email  }}</td>
 					    <td>{{  $time->users->name  }}</td>
@@ -109,18 +113,18 @@
 					</tr>
 				@endforeach
 				@endif
-			  </tbody>
+
 				@endforeach
 				@endif
 			  </tbody>
 			</table>
-			<div class="pagination">
-			<?php echo $user->links(); ?>
-            </div>
 		  </div>
+		    </div>
 		</div>
 	  </div>
 	</div>
 	<div class="loding"></div>
 	</div>
+
+
 @endsection		
