@@ -89,11 +89,9 @@ ul.imp_actions a {
     <div class="col-lg-12 grid-margin stretch-card">
     <div class="card">
       <div class="card-body">
-        	<h4 class="card-title">vacations</h4>
-
-
+        <h4 class="card-title">vacations</h4>
       <div class="table-responsive">
-<table id="sortable-table-1" class="table table-stripe">
+      <table id="sortable-table-1" class="table table-stripe">
         <thead>
         <tr>
           <th>Sr. No </th>
@@ -151,36 +149,35 @@ ul.imp_actions a {
             <a style="margin-left: 5px;display:none;" data-baseURL="{{ url('/') }}" data-ID="{{ $datas->id  }}" class="delete_vaccations" title="Delete"><i class="fa fa-trash-o"></i></a>
             </td>
             <td>
-              <?php if($datas->vacc_status==0){echo "<p style='padding: 10px;
-    text-align: left;
-    color: #000;
-    background: yellow;
-    font-size: 16px;
-    font-weight: bold;
-    border-radius: 10px;'>Pending</p>";}elseif($datas->vacc_status==1){echo "<p style='padding: 10px;
-    text-align: left;
-    color: #fff;
-    background: green;
-    font-size: 16px;
-    font-weight: bold;
-    border-radius: 10px;'>Approved</p>";}elseif($datas->vacc_status==2){echo "<p style='padding: 10px;
-    text-align: left;
-    color: #fff;
-    background: red;
-    font-size: 16px;
-    font-weight: bold;
-    border-radius: 10px;'>Decline</p>";}else{echo "<p style='padding: 10px;
-    text-align: left;
-    color: #000;
-    background: yellow;
-    font-size: 16px;
-    font-weight: bold;
-    border-radius: 10px;'>Pending</p>";} ?>
+            <?php if($datas->vacc_status==0){echo "<p style='padding: 10px;
+              text-align: left;
+              color: #000;
+              background: yellow;
+              font-size: 16px;
+              font-weight: bold;
+              border-radius: 10px;'>Pending</p>";}elseif($datas->vacc_status==1){echo "<p style='padding: 10px;
+              text-align: left;
+              color: #fff;
+              background: green;
+              font-size: 16px;
+              font-weight: bold;
+              border-radius: 10px;'>Approved</p>";}elseif($datas->vacc_status==2){echo "<p style='padding: 10px;
+              text-align: left;
+              color: #fff;
+              background: red;
+              font-size: 16px;
+              font-weight: bold;
+              border-radius: 10px;'>Decline</p>";}else{echo "<p style='padding: 10px;
+              text-align: left;
+              color: #000;
+              background: yellow;
+              font-size: 16px;
+              font-weight: bold;
+              border-radius: 10px;'>Pending</p>";} ?>
             </td>
           </tr>
         <?php $count++; ?>
         @endforeach
-        
         @else
           <p>Sorry No Data!!</p>
         @endif
@@ -212,5 +209,4 @@ ul.imp_actions a {
     </div>
   </div>
 </div>
-
 @endsection

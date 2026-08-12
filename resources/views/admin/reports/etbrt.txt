@@ -2,7 +2,7 @@
 <td colspan="5" class="no-data">
     Sorry, No data found!
 </td>
-</tr>
+</tr>    USI0368787
 {{ $users->links('pagination::bootstrap-5') }}
 <td>{{ ($users->currentPage() - 1) * $users->perPage() + $loop->iteration }}.</td>
 
@@ -14,6 +14,22 @@
 <table id="sortable-table-1" class="table table-stripe">
 
    <th class="sortStyle unsortStyle"> Sr. No<i class="mdi mdi-chevron-down"></i> </th>
+
+   <div class="d-flex justify-content-end align-items-center mb-3">
+        <a href="{{ route('vaccations.create') }}" class="btn btn-primarys" style="background-color:#1c45ef; color: white; border-radius: 6px; padding: 10px 15px; font-size: 14px;">
+            <i class="fa fa-plus mr-1"></i>
+            Add Vacation
+        </a>
+    </div>
+
+
+    @error('fname')
+    <small class="validation-error">
+        {{ $message }}
+    </small>
+    @enderror
+
+
 
     @if(session('success'))
     <div class="alert alert-success">
