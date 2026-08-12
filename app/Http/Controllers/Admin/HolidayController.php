@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
-use App\Holiday;
+use App\Models\Holiday;
 
 class HolidayController extends Controller
 {
@@ -16,18 +16,16 @@ class HolidayController extends Controller
      * @return \Illuminate\Http\Response
      */
 	 
-    public function index()
-    {
-		$data = Holiday::orderBy('created_at', 'DESC')->get();
-		return view('admin.holiday.holiday_view',compact('data'));
+    public function index() {
+      $data = Holiday::orderBy('created_at', 'DESC')->paginate(10);
+      return view('admin.holiday.holiday_view',compact('data'));
     }
 	/**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
+    public function create() {
         return view('admin.holiday.holiday_add');
     }
 	
@@ -37,105 +35,100 @@ class HolidayController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-		$rules = [
-			'date'     =>  'required|string|max:255',
-			'description'    =>  'required',
-		];
-		$customMessages = [
-			'date'     =>  'Please add date',
-			'description'    =>  'Please add description',
-		];
-		$this->validate($request, $rules, $customMessages);
-				
-		$form_data = array(
-				'date' => $request->date,
-				'description' => $request->description,
-		);
-		
-		$user_store = Holiday::create($form_data);
-			
-		if($user_store){
-			return redirect('/holidays')->with(['success' => 'Holiday Created Successfully!!']);
-		}else{
-			return redirect()->back()->with(['success' => 'Error while creating Holiday!!']);
-		}
-		
+    public function store(Request $request) {
+      //Validate input fields
+      $request->validate([
+        'date' => 'required',
+        'description' => 'required',
+      ]);
+      //$rules = [
+      //'date' =>  'required|string|max:255',
+      //'description' =>  'required',
+      //];
+      //$customMessages = [
+      //'date'=> 'Please add date',
+      //'description'=> 'Please add description',
+      //];
+      // $this->validate($request, $rules, $customMessages);
+      $form_data = array(
+        'date' => $request->date,
+        'description' => $request->description,
+      );
+      //Create holidya
+      $user_store = Holiday::create($form_data);
+      //Check if holiday create or not
+      if($user_store) {
+        return redirect('/holidays')->with(['success' => 'Holiday created successfully.']);
+      } else {
+        return redirect()->back()->with(['error' => 'Error while creating Holiday!!']);
+      }
     }
-	
-	
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
+    * Display the specified resource.
+    *
+    * @param  int  $id
+    * @return \Illuminate\Http\Response
+    */
+    public function show($id) {
+      //
     }
-
 
     /**
-     * Show the form for editing the specified resource.
+    * Show the form for editing the specified resource.
+    *
+    * @param  int  $id
+    * @return \Illuminate\Http\Response
+    */
+    public function edit($id) {
+      $data = Holiday::where('id', '=', $id)->get();
+      return view('admin.holiday.holiday_edit',compact('data'));
+    }
+	
+    /**
+   * Update the specified resource in storage.
+   *
+   * @param  \Illuminate\Http\Request  $request
+   * @param  int  $id
+   * @return \Illuminate\Http\Response
+   */
+    public function update(Request $request) {
+      //Validate input fields
+      $request->validate([
+        'date' => 'required',
+        'description' => 'required',
+      ]);
+      //$rules = [
+      //'date' => 'required|string|max:255',
+      //'description' => 'required',
+      //];
+      //$customMessages = [
+      //'date' => 'Please add date',
+      //'description' => 'Please add description',
+      //];
+      //$this->validate($request, $rules, $customMessages);
+      $form_data = array(
+        'date' => $request->date,
+        'description' => $request->description,
+      );
+      //Update
+      $user_update = Holiday::whereId($request->hidden_id)->update($form_data);
+      //Check if holiday updated or not 
+      if($user_update) {
+        return redirect('/holidays')->with(['success' => 'Holiday updated successfully.']);
+      } else {
+        return redirect()->back()->with(['error' => 'Error while updating Holiday!!']);
+      }
+    }
+	
+	  /**
+    * Remove the specified resource from storage.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
-		$data = Holiday::where('id', '=', $id)->get();
-		return view('admin.holiday.holiday_edit',compact('data'));
-		
+
+    public function destroy($id) {        
+      $data = Holiday::findOrFail($id);
+      $data->delete();
     }
-	
-	/**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request)
-    {
-
-		$rules = [
-			'date'     =>  'required|string|max:255',
-			'description'    =>  'required',
-		];
-		$customMessages = [
-			'date'     =>  'Please add date',
-			'description'    =>  'Please add description',
-		];
-		$this->validate($request, $rules, $customMessages);
-
-		$form_data = array(
-				'date' => $request->date,
-				'description' => $request->description,
-		);
-		$user_update = Holiday::whereId($request->hidden_id)->update($form_data);
-
-		if($user_update){
-			return redirect('/holidays')->with(['success' => 'Holiday Updated Successfully!!']);
-		}else{
-			return redirect()->back()->with(['success' => 'Error while updating Holiday!!']);
-		}
-    }
-	
-
-	 /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        $data = Holiday::findOrFail($id);
-        $data->delete();
-    }
-	
-	
-	 
 }

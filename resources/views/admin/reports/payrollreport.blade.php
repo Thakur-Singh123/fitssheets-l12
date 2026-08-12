@@ -1,5 +1,4 @@
 @extends('layouts.master')
-
 @section('content')
 <?php use App\Http\Controllers\Supervisor\UserssController; ?>
 <style>
@@ -24,14 +23,10 @@
                 <div class="card">
                   <div class="card-body">
                     <h4 class="card-title">Select payperiod</h4>
-                    
 					    <div class="form-group">
                             <select class="form-control form-control-lg" id="payperiod" name="payperiod">
 								<?php if(isset($payperiods_dates)){ ?>
 								<?php foreach($payperiods_dates as $payperiods_date){?>
-									
-									
-									
 											<?php 
 												$TodayDate = new DateTime();	
 												$bet_dates = explode('-',$payperiods_date->payperiod_value);
@@ -62,16 +57,13 @@
 								
 							</select>
                         </div>
-						
-                   
                   </div>
                 </div>
               </div>
-			                <div class="col-md-6 grid-margin stretch-card">
+			    <div class="col-md-6 grid-margin stretch-card">
                 <div class="card">
                   <div class="card-body">
                     <h4 class="card-title">Select company</h4>
-                    
 					    <div class="form-group">
 							<select  id="search_by_comp" class="form-control" name="search_by_comp" >
 								<option value="0" >Select</option>
@@ -87,17 +79,18 @@
               </div>
 			  <button data-baseURL="{{ url('/') }}" id="payroll" type="button" class="btn btn-success mr-2">Submit</button>
             </div>
-</form>
-<!--div style="    margin-top: 10px;" align="left">
+            </form>
+            <!--div style=" margin-top: 10px;" align="left">
 				<a href="{{ url('/user/export/all') }}" id="export" class="btn btn-success">Export to Excel</a>
 		    </div-->
-		    <div style="    margin-top: 10px;" align="left">
+		    <div style="margin: 0px 0px 10px 0px;" align="right">
 				<a href="{{ url('/user/export/all') }}" id="hexport" class="btn btn-success">Export Payroll Report</a>
 		    </div>
-
-			<table id="sortable-table-1" class="table table-striped table-responsive">
+			<div class="table-responsive">
+            <table id="sortable-table-1" class="table table-stripe">
 			  <thead>
 				<tr>
+				  <th class="sortStyle unsortStyle"> Sr. No<i class="mdi mdi-chevron-down"></i> </th>
 				  <th class="sortStyle unsortStyle"> Date<i class="mdi mdi-chevron-down"></i> </th>
 				  <th class="sortStyle unsortStyle"> Emp ID<i class="mdi mdi-chevron-down"></i> </th>
 				  <th class="sortStyle unsortStyle"> Last Name<i class="mdi mdi-chevron-down"></i> </th>
@@ -108,10 +101,9 @@
 				</tr>
 			  </thead>
 			  <tbody id="result">
-			
 			  </tbody>
 			</table>
-				
+		  </div>
 		  </div>
 		</div>
 	  </div>

@@ -1,5 +1,4 @@
 @extends('layouts.master')
-
 @section('content')
 <?php use App\Http\Controllers\Admin\AdminController; ?>
 <style>
@@ -18,12 +17,13 @@
 		<div class="card">
 		  <div class="card-body">
 			<h4 class="card-title">All Users Sign In/Sign Out</h4>
-			<div style="margin-top: 10px;" align="left">
+			<div style="margin: 0px 0px 10px 0px;" align="right">
 				<a href="{{ url('/all/supervisor/users') }}" id="export" class="btn btn-success">Export to Excel</a>
 		    </div>
 			<table id="sortable-table-1" class="table table-striped table-responsive">
 			  <thead>
 				<tr>
+				  <th class="sortStyle unsortStyle"> Sr. No<i class="mdi mdi-chevron-down"></i> </th>
 				  <th class="sortStyle unsortStyle"> Emp ID<i class="mdi mdi-chevron-down"></i> </th>
 				  <th class="sortStyle unsortStyle"> Driving License<i class="mdi mdi-chevron-down"></i> </th>
 				  <th class="sortStyle unsortStyle"> Email<i class="mdi mdi-chevron-down"></i> </th>
@@ -43,11 +43,12 @@
 				$data = AdminController::UserManager($datas->id);
 			?>
 			<tr>
-					  <td> <b>{{ $datas->name  }}</b> </td>
-					</tr>
+				<td> <b>{{ $datas->name  }}</b> </td>
+			</tr>
 			 @if($data->count() != 0)
 				@foreach ($data as $user)
 					<tr>
+						<td>{{ ($supervisor->currentPage() - 1) * $supervisor->perPage() + $loop->iteration }}.</td>
 					  <td> {{ $user->emp_id  }} </td>
 					    <td> <?php if($user->drivers_license != null){ ?>
 					<img style=" margin-top: 15px; width: 152px;height: 156px;" src="{{ url('/public/assets/uploads/driving-license') }}/{{ $user->drivers_license }}">
@@ -70,8 +71,7 @@
 				@endif
 			  </tbody>
 			</table>
-				<div class="pagination">
-</div>
+            {{ $supervisor->links('pagination::bootstrap-5') }}
 		  </div>
 		</div>
 	  </div>

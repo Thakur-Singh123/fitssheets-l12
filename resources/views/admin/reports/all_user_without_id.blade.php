@@ -1,5 +1,4 @@
 @extends('layouts.master')
-
 @section('content')
 <?php use App\Http\Controllers\Admin\UserInfoController; ?>
 <?php use App\Http\Controllers\Admin\AdminController; ?>
@@ -13,21 +12,22 @@
 		<div class="alert alert-success">
 			<h4>{{\Session::get('success')}}</h4>
 		</div>
-	@endif
+	@endif 
 	<div class="row">
 	  <div class="col-lg-12 grid-margin stretch-card">
 		<div class="card">
 		  <div class="card-body">
 			<h4 class="card-title">All Applicants(Without ID)</h4>
 			@if($users->count() != 0)
-			<div style="margin-top: 10px;" align="left">
+			<div style="margin: 0px 0px 10px 0px;" align="right">
 				<a href="{{ url('/all/applicants-without_id') }}" id="export" class="btn btn-success">Export to Excel</a>
 		    </div>
 			@endif
-			<table id="sortable-table-1" class="table table-striped table-responsive">
+			<div class="table-responsive">
+            <table id="sortable-table-1" class="table table-stripe">
 			  <thead>
 				<tr>
-				  <th class="sortStyle unsortStyle"> #<i class="mdi mdi-chevron-down"></i> </th>
+				  <th class="sortStyle unsortStyle"> Sr. No<i class="mdi mdi-chevron-down"></i> </th>
 				  <th class="sortStyle unsortStyle"> Name<i class="mdi mdi-chevron-down"></i> </th>
 				  <th class="sortStyle unsortStyle"> First Name<i class="mdi mdi-chevron-down"></i> </th>
 				  <th class="sortStyle unsortStyle"> Last Name<i class="mdi mdi-chevron-down"></i> </th>
@@ -41,7 +41,7 @@
 			  @if($users->count() != 0)
 				@foreach ($users as $datas)
 					<tr>
-					  <td><?php echo $count; ?></td>
+					 <td>{{ ($users->currentPage() - 1) * $users->perPage() + $loop->iteration }}.</td>
 					  <td> {{ $datas->name  }} </td>
 					   <td> {{ $datas->first_name }} </td>
 					    <td> {{ $datas->last_name }} </td>
@@ -51,14 +51,18 @@
 					</tr>
 				<?php $count++; ?>
 				@endforeach
-				
 				@else
-					<p>Sorry No Data!!</p>
+					<tr>
+					<td colspan="7" class="no-data">
+						Sorry, No data found!
+					</td>
+					</tr>
 				@endif
 			  </tbody>
 			</table>
-
+            {{ $users->links('pagination::bootstrap-5') }}
 		  </div>
+		</div>
 		</div>
 	  </div>
 	</div>

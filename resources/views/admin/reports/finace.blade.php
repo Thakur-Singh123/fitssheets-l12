@@ -207,21 +207,16 @@
 				</div>
 			</div>
 			@if($data->count() != 0)
-			<div style="    margin-top: 10px;" align="left">
+			<div style="margin: 0px 0px 10px 0px;" align="right">
 				<a href="{{ url('/user/export/all') }}" id="export" class="btn btn-success">Export to Excel</a>
 		    </div>
-			@endif
-			
-						
-                       
+			@endif	    
 			<div id="data-main">
-					
             </div>
 			<table id="sortable-table-1" class="table table-striped table-responsive">
 			  <thead>
 				<tr>
-
-				  <th class="sortStyle unsortStyle"> #<i class="mdi mdi-chevron-down"></i> </th>
+				  <th class="sortStyle unsortStyle"> Sr. No<i class="mdi mdi-chevron-down"></i> </th>
 				  <!--th class="sortStyle unsortStyle"> Emp ID<i class="mdi mdi-chevron-down"></i> </th-->
 				  <th class="sortStyle unsortStyle"> Emp SSN<i class="mdi mdi-chevron-down"></i> </th>
 				  <th class="sortStyle unsortStyle"> Emp Name<i class="mdi mdi-chevron-down"></i> </th>
@@ -258,7 +253,7 @@
 						//print_r($approved_by);
 				?>
 					<tr <?php if($color_info != "") { ?>style="background:<?php echo $color_info; } ?>">
-					  <td><?php echo $count; ?></td>
+					  <td>{{ ($data->currentPage() - 1) * $data->perPage() + $loop->iteration }}.</td>
 					  <!--td>{{ $datas->emp_id  }}</td-->
 					  <td>{{ $datas->ssn_no  }}</td>
 					  <td>{{ $datas->first_name   }}</br><span>{{ $datas->last_name    }}</span></td>
@@ -320,15 +315,16 @@
 					</tr>
 				<?php $count++; ?>
 				@endforeach
-				
 				@else
-					<p>Sorry No Data!!</p>
+					<tr>
+					<td colspan="10" class="no-data">
+						Sorry, No data found!
+					</td>
+					</tr>
 				@endif
 			  </tbody>
 			</table>
-				<div class="pagination">
-    <?php echo $data->links(); ?>
-</div>
+            {{ $data->links('pagination::bootstrap-5') }}
 		  </div>
 		</div>
 	  </div>

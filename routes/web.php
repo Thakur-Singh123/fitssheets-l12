@@ -58,9 +58,12 @@ Route::group(['middleware' => 'auth'], function () {
 		//Dasbobard
 		Route::get('/dashboard', [\App\Http\Controllers\Admin\AdminController::class, 'index'])->name('admin.dashboard');
 		Route::get('/admin-logout', [\App\Http\Controllers\Admin\AdminController::class, 'logout'])->name('admin.logout');
+		//Profile
+		Route::get('/admin/edit-profile', 'Admin\AdminController@edit_profile');
+		Route::post('/admin/update-profile', 'Admin\AdminController@update_profile');
 		//Reset password
-		Route::get('/profile/resetpassword', 'Admin\AdminController@resetpassword');
-		Route::post('/profile/updatepassword', 'Admin\AdminController@updatepassword');
+		Route::get('/admin/change-password', 'Admin\AdminController@resetpassword');
+		Route::post('/admin/updatepassword', 'Admin\AdminController@updatepassword');
 		//Twillio
 		Route::get('/smsnotifications', [\App\Http\Controllers\Admin\AdminController::class, 'sendSmsview']);
 		Route::post('/smsnotification', [\App\Http\Controllers\Admin\AdminController::class, 'sendSms']);
@@ -119,12 +122,13 @@ Route::group(['middleware' => 'auth'], function () {
 		Route::any('/all/payperiod/paysearch/postdata', 'Admin\UserInfoController@post_paydata');
 	    //Route::get('user/aexports/test/{frmdate1}/{todate1}/{search_by_comp1}', 'Admin\UserInfoController@allexport_data_new');
 		//Route::get('time-sheets/destroy/{id}', 'User\TimesheetController@destroy');
-		//Payperiod
+		//Payperiod 
 		Route::resource('payperiods', 'Admin\PayperiodsController');
 		Route::post('payperiods/store', 'Admin\PayperiodsController@store')->name('payperiods.store');
 		Route::post('payperiods/astore', 'Admin\PayperiodsController@astore')->name('payperiods.astore');
 		Route::post('payperiods/update', 'Admin\PayperiodsController@update')->name('payperiods.update');
-		Route::get('payperiods/destroy/{id}', 'Admin\PayperiodsController@destroy');
+		Route::get('payperiod/destroy', 'Admin\PayperiodsController@destroy');
+		
 		//Manager
 		Route::resource('casemanagers', 'Admin\CaseManagerInfoController');
 		//Supervisor
@@ -155,8 +159,9 @@ Route::group(['middleware' => 'auth'], function () {
 		Route::resource('vaccations', 'Admin\VaccationController');
 		Route::post('vaccations/store', 'Admin\VaccationController@store')->name('vaccations.store');
 		Route::post('vaccations/update', 'Admin\VaccationController@update')->name('vaccations.update');
-		Route::get('vaccations/destroy/{id}', 'Admin\VaccationController@destroy');
+		Route::get('vaccation/destroy', 'Admin\VaccationController@destroy');
 		//Approve Vacc Hours
+		Route::get('auser/vaccation/view', 'Admin\AdminController@vaccation_view');
 		Route::get('approve/vaccation/hours', 'Admin\AdminController@approve_vchour');
 		Route::get('user/vaccation/approve', 'Admin\AdminController@vacc_approve');
 		Route::get('user/vaccation/decline', 'Admin\AdminController@vacc_decline');
