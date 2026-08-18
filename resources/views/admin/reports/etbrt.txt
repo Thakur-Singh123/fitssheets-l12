@@ -10,6 +10,8 @@
 
 <div style="margin: 0px 0px 10px 0px;" align="right">
 
+<p class="no-data">Sorry no data found!</p>
+
 <div class="table-responsive">
 <table id="sortable-table-1" class="table table-stripe">
 
@@ -58,12 +60,6 @@
 		}
     }
 
-    <a
-        style="margin-left: 5px"
-        data-baseURL="{{ url('/') }}"
-        data-vocation_id="{{ $datas->id  }}"
-        class="delete_vocation_record"
-        title="Delete"
-        ><i class="fa fa-trash-o"></i
-    >
+    <a style="margin-left: 5px" data-baseURL="{{ url('/') }}" data-vocation_id="{{ $datas->id  }}" class="delete_vocation_record" title="Delete">
+        <i class="fa fa-trash-o"></i>
     </a>

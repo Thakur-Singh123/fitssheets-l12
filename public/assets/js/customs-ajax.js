@@ -164,4 +164,164 @@ $(document).ready(function() {
             }
         });
     });
+    //Delete holiday
+    $('body').on('click', '.delete_holiday_record', function(event) {
+        event.preventDefault();
+        //Get data attribute
+        var holiday_id = $(this).data('holiday_id');    
+        //Delete through sweet alert
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this holiday!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, Delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                //Call ajax
+                $.ajax({
+                    type: 'GET',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    url: bs_url+ '/holiday/destroy',  
+                    data: { 
+                        holiday_id: holiday_id 
+                    },
+                    //Show success message
+                    success: function(response) {
+                        Swal.fire({
+                            title: "Deleted!",
+                            text: "Holiday deleted successfully.",
+                            icon: "success"
+                        }).then(() => {
+                            location.reload();
+                        });
+                    },
+                });
+            }
+        });
+    });
+    //Delete company
+    $('body').on('click', '.delete_company_record', function(event) {
+        event.preventDefault();
+        //Get data attribute
+        var company_id = $(this).data('company_id');    
+        //Delete through sweet alert
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this company!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, Delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                //Call ajax
+                $.ajax({
+                    type: 'GET',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    url: bs_url+ '/company/destroy',  
+                    data: { 
+                        company_id: company_id 
+                    },
+                    //Show success message
+                    success: function(response) {
+                        Swal.fire({
+                            title: "Deleted!",
+                            text: "Company deleted successfully.",
+                            icon: "success"
+                        }).then(() => {
+                            location.reload();
+                        });
+                    },
+                });
+            }
+        });
+    });
+    //Delete house
+    $('body').on('click', '.delete_house_record', function(event) {
+        event.preventDefault();
+        //Get data attribute
+        var house_id = $(this).data('house_id');    
+        //Delete through sweet alert
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this house!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, Delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                //Call ajax
+                $.ajax({
+                    type: 'GET',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    url: bs_url+ '/house/destroy',  
+                    data: { 
+                        house_id: house_id 
+                    },
+                    //Show success message
+                    success: function(response) {
+                        Swal.fire({
+                            title: "Deleted!",
+                            text: "House deleted successfully.",
+                            icon: "success"
+                        }).then(() => {
+                            location.reload();
+                        });
+                    },
+                });
+            }
+        });
+    });
+    //Delete Department
+    $('body').on('click', '.delete_department_record', function(event) {
+        event.preventDefault();
+        //Get data attribute
+        var department_id = $(this).data('department_id');    
+        //Delete through sweet alert
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this house!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, Delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                //Call ajax
+                $.ajax({
+                    type: 'GET',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    url: bs_url+ '/department/destroy',  
+                    data: { 
+                        department_id: department_id 
+                    },
+                    //Show success message
+                    success: function(response) {
+                        Swal.fire({
+                            title: "Deleted!",
+                            text: "Department deleted successfully.",
+                            icon: "success"
+                        }).then(() => {
+                            location.reload();
+                        });
+                    },
+                });
+            }
+        });
+    });
 });

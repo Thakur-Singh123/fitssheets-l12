@@ -128,7 +128,6 @@ Route::group(['middleware' => 'auth'], function () {
 		Route::post('payperiods/astore', 'Admin\PayperiodsController@astore')->name('payperiods.astore');
 		Route::post('payperiods/update', 'Admin\PayperiodsController@update')->name('payperiods.update');
 		Route::get('payperiod/destroy', 'Admin\PayperiodsController@destroy');
-		
 		//Manager
 		Route::resource('casemanagers', 'Admin\CaseManagerInfoController');
 		//Supervisor
@@ -144,17 +143,17 @@ Route::group(['middleware' => 'auth'], function () {
 		Route::resource('companies', 'Admin\CompanyController');
 		Route::post('companies/store', 'Admin\CompanyController@store')->name('compnay.store');
 		Route::post('companies/update', 'Admin\CompanyController@update')->name('compnay.update');
-		Route::get('companies/destroy/{id}', 'Admin\CompanyController@destroy');
+		Route::get('company/destroy', 'Admin\CompanyController@destroy');
 		//Holiday 
 		Route::resource('holidays', 'Admin\HolidayController');
 		Route::post('holidays/store', 'Admin\HolidayController@store')->name('holiday.store');
 		Route::post('holidays/update', 'Admin\HolidayController@update')->name('holiday.update');
-		Route::get('holidays/destroy/{id}', 'Admin\HolidayController@destroy');
+		Route::get('holiday/destroy', 'Admin\HolidayController@destroy');
 		//House
 		Route::resource('houses', 'Admin\HouseController');
 		Route::post('houses/store', 'Admin\HouseController@store')->name('houses.store');
 		Route::post('houses/update', 'Admin\HouseController@update')->name('houses.update');
-		Route::get('houses/destroy/{id}', 'Admin\HouseController@destroy');
+		Route::get('house/destroy', 'Admin\HouseController@destroy');
 		//Vaccation
 		Route::resource('vaccations', 'Admin\VaccationController');
 		Route::post('vaccations/store', 'Admin\VaccationController@store')->name('vaccations.store');

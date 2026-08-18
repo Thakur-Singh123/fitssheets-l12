@@ -19,7 +19,7 @@
 		<div class="col-md-12 grid-margin stretch-card">
 			<div class="card">
 				<div class="card-body">
-					<h4 class="card-title">Update Vacations</h4>
+					<h4 class="card-title">Edit Vacation</h4>
 					<p style="display:none" class="card-description"> Basic form elements </p>
 					<form method="POST" action="{{ url('/vaccations/update') }}" class="forms-sample">
 					@csrf

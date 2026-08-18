@@ -289,40 +289,58 @@
         </div>
       </li>
       <?php } ?>
-      <li class="nav-item">
-          <a class="nav-link" data-toggle="collapse" href="#ui-house" aria-expanded="false" aria-controls="ui-basic">
-              <i class="menu-icon typcn typcn-coffee"></i>
-              <span class="menu-title">Houses</span>
-              <i class="menu-arrow"></i>
-          </a>
-          <div class="collapse" id="ui-house">
-              <ul class="nav flex-column sub-menu">
-                  <li class="nav-item">
-                      <a class="nav-link" href="{{ route('houses.index') }}">All Houses</a>
-                  </li>
-                  <li class="nav-item">
-                      <a class="nav-link" href="{{ route('houses.create') }}">Add House</a>
-                  </li>
-              </ul>
-          </div>
+      @php
+        $houseActive = request()->routeIs('houses.*');
+      @endphp
+      <li class="nav-item {{ $houseActive ? 'active' : '' }}"> 
+        <a class="nav-link" data-toggle="collapse" href="#ui-house" aria-expanded="{{ $houseActive ? 'true' : 'false' }}" aria-controls="ui-house"> 
+          <i class="menu-icon typcn typcn-coffee"></i> 
+            <span class="menu-title">
+              Houses
+            </span> 
+          <i class="menu-arrow"></i> 
+        </a> 
+        <div class="collapse {{ $houseActive ? 'show' : '' }}" id="ui-house"> 
+          <ul class="nav flex-column sub-menu"> 
+            <li class="nav-item"> 
+              <a class="nav-link {{ request()->routeIs('houses.create') ? 'active-submenu' : '' }}" href="{{ route('houses.create') }}">
+                Add House
+              </a> 
+            </li> 
+            <li class="nav-item"> 
+              <a class="nav-link {{ request()->routeIs('houses.index') || request()->is('houses/*/edit') ? 'active-submenu' : '' }}" href="{{ route('houses.index') }}">
+                All Houses
+              </a> 
+            </li> 
+          </ul> 
+        </div> 
       </li>
-      <?php if(Auth::user()->admin_permissions == null && Auth::user()->admin_permissions != 1 ){ ?>
-      <li class="nav-item">
-          <a class="nav-link" data-toggle="collapse" href="#ui-dept" aria-expanded="false" aria-controls="ui-basic">
-              <i class="menu-icon typcn typcn-coffee"></i>
-              <span class="menu-title">Departments</span>
-              <i class="menu-arrow"></i>
-          </a>
-          <div class="collapse" id="ui-dept">
-              <ul class="nav flex-column sub-menu">
-                  <li class="nav-item">
-                      <a class="nav-link" href="{{ route('department.index') }}">All Department</a>
-                  </li>
-                  <li class="nav-item">
-                      <a class="nav-link" href="{{ route('department.create') }}">Add Department</a>
-                  </li>
-              </ul>
-          </div>
+      <?php if(Auth::user()->admin_permissions == null && Auth::user()->admin_permissions != 1 ) { ?>
+      @php
+        $departmentActive = request()->routeIs('department.*');
+      @endphp
+      <li class="nav-item {{ $departmentActive ? 'active' : '' }}"> 
+        <a class="nav-link" data-toggle="collapse" href="#ui-dept" aria-expanded="{{ $departmentActive ? 'true' : 'false' }}" aria-controls="ui-dept"> 
+          <i class="menu-icon typcn typcn-coffee"></i> 
+          <span class="menu-title">
+            Departments
+          </span> 
+          <i class="menu-arrow"></i> 
+        </a> 
+        <div class="collapse {{ $departmentActive ? 'show' : '' }}" id="ui-dept"> 
+          <ul class="nav flex-column sub-menu">
+            <li class="nav-item"> 
+              <a class="nav-link {{ request()->routeIs('department.create') ? 'active-submenu' : '' }}" href="{{ route('department.create') }}">
+                Add Department
+              </a> 
+            </li> 
+            <li class="nav-item"> 
+              <a class="nav-link {{ request()->routeIs('department.index') || request()->is('department/*/edit') ? 'active-submenu' : '' }}" href="{{ route('department.index') }}">
+                All Departments
+              </a> 
+            </li> 
+          </ul> 
+        </div> 
       </li>
       <?php } ?>
       <li class="nav-item">

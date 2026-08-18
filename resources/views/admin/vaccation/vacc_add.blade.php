@@ -5,7 +5,7 @@
 		<div class="col-md-12 grid-margin stretch-card">
 			<div class="card">
 				<div class="card-body">
-					<h4 class="card-title">Add Vacation</h4>
+					<h4 class="card-title">Add New Vacation</h4>
 					<p style="display:none" class="card-description"> Basic form elements </p>
 					<form method="POST" action="{{ url('/vaccations/store') }}" class="forms-sample">
 					@csrf

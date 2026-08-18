@@ -43,7 +43,8 @@
 									<td>{{ date('M d, Y', strtotime($datas->created_at)) }}</td>
 									<td>
 										<a href="{{ route('holidays.edit', $datas->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
-									    <a style="margin-left: 5px" data-baseURL="{{ url('/') }}" data-ID="{{ $datas->id  }}" class="delete_compnay" title="Delete"><i class="fa fa-trash-o"></i></a>
+									    {{-- <a style="margin-left: 5px" data-baseURL="{{ url('/') }}" data-ID="{{ $datas->id  }}" class="delete_compnay" title="Delete"><i class="fa fa-trash-o"></i></a> --}}
+										<a style="margin-left: 5px" data-baseURL="{{ url('/') }}" data-holiday_id="{{ $datas->id  }}" class="delete_holiday_record" title="Delete"><i class="fa fa-trash-o"></i></a>
 									</td>
 								</tr>
 								<?php $count++; ?>
