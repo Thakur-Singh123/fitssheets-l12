@@ -97,5 +97,28 @@
                 $('.error-alert').fadeOut(500);
             }, 4000);
         </script>
+        <script>
+        $(document).on('click','.password-toggle',function() {
+            let input = $('#' + $(this).data('target'));
+            if(input.attr('type') == 'password') {
+            input.attr('type','text');
+            $(this).find('i')
+            .removeClass('fa-eye')
+            .addClass('fa-eye-slash');
+            } else {
+            input.attr('type','password');
+            $(this).find('i')
+            .removeClass('fa-eye-slash')
+            .addClass('fa-eye');
+            }
+        });
+        </script>
+        <script>
+            $(document).ready(function () {
+                setTimeout(function () {
+                $('.alert-danger').fadeOut(500);
+            }, 500000);
+            });
+        </script>
     </body>
 </html>

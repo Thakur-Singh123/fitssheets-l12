@@ -434,3 +434,22 @@ p.no-data {
     font-weight: 400;
 }
 /*sidebaar end*/
+.position-relative {
+    position:relative;
+}
+.password-toggle {
+    position:absolute;
+    top:50%;
+    right:15px;
+    transform:translateY(-50%);
+    cursor:pointer;
+    color:#6c757d;
+    z-index:10;
+}
+.password-toggle i {
+    font-size:16px;
+}
+.position-relative .form-control{
+    padding-right:45px;
+}
+

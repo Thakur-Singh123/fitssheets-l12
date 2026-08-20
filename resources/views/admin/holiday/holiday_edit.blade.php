@@ -51,8 +51,8 @@
 		</div>
         @endforeach 
 		@else
-       <p class="no-data">Sorry no data found!</p>
-       @endif
+        <p class="no-data">Sorry no data found!</p>
+        @endif
     </div>
 </div>
 @endsection

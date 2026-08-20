@@ -22,8 +22,13 @@
 		  <div class="card-body">
 		  	<div class="card-body-inn">
 			<h4 class="card-title">Users</h4>
-			<p  class="card-description"><a href="{{ route('users.create') }}"> Add User <i class="fa fa-plus-circle"></i></a> </p>
-			
+			{{-- <p  class="card-description"><a href="{{ route('users.create') }}"> Add User <i class="fa fa-plus-circle"></i></a> </p> --}}
+			<div class="d-flex justify-content-end align-items-center mb-3">
+				<a href="{{ route('users.create') }}" class="btn btn-primarys" style="background-color:#1c45ef; color: white; border-radius: 6px; padding: 10px 15px; font-size: 14px;">
+					<i class="fa fa-plus mr-1"></i>
+					Add Vacation
+				</a>
+			</div>
 			  <div class="row">
 				<div class="col-md-4">
 				  <div class="form-group row">
@@ -38,7 +43,7 @@
 				 </div>
 				 		<div class="col-md-4">
 				  <div class="form-group row">
-					<label  style="font-size: 13px;" class="col-sm-3 col-form-label">Search User By Approve/Decline</label>
+					<label  style="font-size: 14px; display: flex; margin: 0px 30px 0px -5px;" class="col-sm-3 col-form-label">Search User By Approve/Decline</label>
 					<div class="col-sm-8">
 					  <select data-baseURL="{{ url('/') }}" id="aap_status" class="form-control" name="aap_status" >
 						<option value="0" >Select</option>
@@ -205,15 +210,14 @@
 				</div>
 			</div>
 			@if($data->count() != 0)
-			<div style="    margin-top: 10px;" align="left">
+			<div style="margin:-64px 178px 40px 0px;" align="right">
 				<a href="{{ url('/user/export/all') }}" id="export" class="btn btn-success">Export to Excel</a>
 		    </div>
 			@endif
-
 			<div class="row">
 			<div class="col-md-4">
 				  <div class="form-group row">
-					<label  style="font-size: 13px;" class="col-sm-5 col-form-label">Staff List By Company</label>
+					<label style="font-size: 13px;" class="col-sm-5 col-form-label">Staff List By Company</label>
 					
 					<div class="col-sm-7">
 					 <select data-baseURL="{{ url('/') }}" id="search_by_stafflist" class="form-control" name="search_by_stafflist" >
@@ -225,15 +229,17 @@
 						  @endif 
 					  </select>
 					</div>
-					<a href="" id="export_s" class="btn btn-success">Export</a>
-				  </div>
+					<div style="margin: -48px 0px 0px 330px;" align="right">
+					   <a href="" id="export_s" class="btn btn-success">Export</a>
+				    </div>
+				    </div>
 				</div>
 			</div>
 		</div>
 			<table id="sortable-table-1" class="table table-striped table-responsive">
 			  <thead>
 				<tr>
-				  <th class="sortStyle unsortStyle"> #<i class="mdi mdi-chevron-down"></i> </th>
+				  <th class="sortStyle unsortStyle"> Sr. No<i class="mdi mdi-chevron-down"></i> </th>
 				  <th class="sortStyle unsortStyle"> Name<i class="mdi mdi-chevron-down"></i> </th>
 				  <th> Actions </th>
 				  <th class="sortStyle unsortStyle"> Emp ID<i class="mdi mdi-chevron-down"></i> </th>
@@ -267,11 +273,14 @@
 						$color_info = UserInfoController::color_info($datas->id); 
 				?>
 					<tr <?php if($color_info != "") { ?>style="background:<?php echo $color_info; } ?>">
-					  <td><?php echo $count; ?></td>
+					  <td>{{ ($data->currentPage() - 1) * $data->perPage() + $loop->iteration }}.</td>
 					  <td> {{ $datas->last_name  }} {{ $datas->first_name  }}</td>
 					 
 					  <td>
-						<a  href="{{ route('users.edit', $datas->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
+						{{-- <a  href="{{ route('users.edit', $datas->id) }}" title="Edit"><i class="fa fa-pencil"></i></a> --}}
+						<a href="{{ route('users.edit', ['user' => $datas->id, 'u' => 'user']) }}" title="Edit">
+							<i class="fa fa-pencil"></i>
+						</a>
 						 <?php if(Auth::user()->id == 72 || Auth::user()->id == 50 || Auth::user()->id == 282){ ?>
 						<?php }else{ ?>
 						<a  style="margin-left: 5px;"  href="{{ url('/user/changepassword') }}/{{ $datas->id  }}" title="Change Password"><i class="fa fa-unlock"></i></a>
@@ -375,19 +384,19 @@
 					</tr>
 				<?php $count++; ?>
 				@endforeach
-				
 				@else
-					<p>Sorry No Data!!</p>
+				<tr>
+					<td colspan="16" class="no-data">
+						Sorry, No data found!
+					</td>
+				</tr>
 				@endif
 			  </tbody>
 			</table>
-				<div class="pagination">
-    <?php echo $data->links(); ?>
-</div>
-		  </div>
+            {{ $data->links('pagination::bootstrap-5') }}
 		</div>
 	  </div>
 	</div>
 	<div class="loding"></div>
-	</div>
-@endsection		
+</div>
+@endsection	

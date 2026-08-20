@@ -16,7 +16,6 @@ use App\Models\Company;
 use DateTime;
 use Carbon\Carbon;
 
-
 class ListProblemsController extends Controller
 {
     /**
