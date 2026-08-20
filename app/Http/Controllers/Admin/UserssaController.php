@@ -8,14 +8,14 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use App\TimeSheet;
+use App\Models\TimeSheet;
 use Excel;
-use App\User;
-use App\Company;
-use App\UserManager;
+use App\Models\User;
+use App\Models\Company;
+use App\Models\UserManager;
 use DateTime;
-use App\Payperiods;
-use App\UserSupervisorRel;
+use App\Models\Payperiods;
+use App\Models\UserSupervisorRel;
 
 class UserssaController extends Controller
 {

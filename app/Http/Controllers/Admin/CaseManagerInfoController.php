@@ -8,18 +8,18 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use App\User;
+use App\Models\User;
 
 class CaseManagerInfoController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    * Display a listing of the resource.
+    *
+    * @return \Illuminate\Http\Response
+    */
 	 
-    public function index()
-    {
+	//Functino for all case manager
+    public function index() {
 		$data = User::where("role", "=", "casemanager")->orderBy('name', 'ASC')->get();
 		return view('admin.cmusers.cmuser_view',compact('data'));
     }
@@ -42,21 +42,21 @@ class CaseManagerInfoController extends Controller
      */
     public function store(Request $request)
     {
-		$rules = [
-			'name'     =>  'required|string|max:255',
-			'email'    =>  'required|string|email|max:255|unique:users',
-			'role' 	   =>  'required',
-			'dept'     =>  'required',
-			'password' =>  'required|string|min:8|same:confirmed',
-		];
-		$customMessages = [
-			'name'     =>  'Please add user name',
-			'email'    =>  'Please add user email',
-			'role' 	   =>  'Please add user role',
-			'dept'     =>  'Please add user department',
-			'password' =>  'Add password or same as password entered before',
-		];
-		$this->validate($request, $rules, $customMessages);
+		// $rules = [
+		// 	'name'     =>  'required|string|max:255',
+		// 	'email'    =>  'required|string|email|max:255|unique:users',
+		// 	'role' 	   =>  'required',
+		// 	'dept'     =>  'required',
+		// 	'password' =>  'required|string|min:8|same:confirmed',
+		// ];
+		// $customMessages = [
+		// 	'name'     =>  'Please add user name',
+		// 	'email'    =>  'Please add user email',
+		// 	'role' 	   =>  'Please add user role',
+		// 	'dept'     =>  'Please add user department',
+		// 	'password' =>  'Add password or same as password entered before',
+		// ];
+		// $this->validate($request, $rules, $customMessages);
 				
 		$form_data = array(
 				'name' => $request->name,

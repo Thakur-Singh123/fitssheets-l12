@@ -7,14 +7,14 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
 use Excel;
-use App\TimeSheet;
-use App\User;
-use App\Company;
-use App\House;
-use App\UserManager;
+use App\Models\TimeSheet;
+use App\Models\User;
+use App\Models\Company;
+use App\Models\House;
+use App\Models\UserManager;
 use Carbon\Carbon;
-use App\UserSupervisorRel;
-use App\UserCasemanagerRel;
+use App\Models\UserSupervisorRel;
+use App\Models\UserCasemanagerRel;
 
 class TimesheetssaController extends Controller
 {

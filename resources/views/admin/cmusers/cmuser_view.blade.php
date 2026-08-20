@@ -55,8 +55,15 @@
 					  <td><?php echo $count; ?></td>
 					  <td> {{ $datas->emp_id  }} </td>
 						<td>
-						<a  href="{{ route('users.edit', $datas->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
-						<a  style="margin-left: 5px;"  href="{{ url('/user/changepassword') }}/{{ $datas->id  }}" title="Change Password"><i class="fa fa-unlock"></i></a>
+						<a href="{{ route('users.edit', ['user' => $datas->id, 'u' => 'casemanager']) }}" title="Edit">
+							<i class="fa fa-pencil"></i>
+						</a>
+						{{-- <a  style="margin-left: 5px;"  href="{{ url('/user/changepassword') }}/{{ $datas->id  }}" title="Change Password"><i class="fa fa-unlock"></i></a> --}}
+						<a style="margin-left: 5px;" 
+						href="{{ url('/user/changepassword') }}/{{ $datas->id }}?u=casemanager" 
+						title="Change Password">
+							<i class="fa fa-unlock"></i>
+						</a>
 						<a style="margin-left: 5px;cursor:pointer" data-baseURL="{{ url('/') }}" data-ID="{{ $datas->id  }}" class="delete_user" title="Delete"><i class="fa fa-trash-o"></i></a>
 						<?php if($datas->role == "user"){ ?>
 						<a  style="margin-left: 5px;"  href="{{ url('/user/timesheets') }}/{{ $datas->id  }}" title="Time Sheets"><i class="fa fa-book"></i></a>

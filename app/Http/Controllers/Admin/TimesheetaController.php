@@ -7,11 +7,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
 use Excel;
-use App\TimeSheet;
-use App\User;
-use App\Company;
-use App\House;
-use App\UserCasemanagerRel;
+use App\Models\TimeSheet;
+use App\Models\User;
+use App\Models\Company;
+use App\Models\House;
+use App\Models\UserCasemanagerRel;
 
 class TimesheetaController extends Controller
 {
@@ -55,24 +55,31 @@ class TimesheetaController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-		
-		$rules = [
-			'company_id'     =>  'required',
-			'house_id'     =>  'required',
-			'hours_day'    =>  'required',
-			'time_in' 	   =>  'required',
-			'time_out' 	   =>  'required',
-		];
-		$customMessages = [
-			'company_id'     =>  'Please select company',
-			'house_id'     =>  'Please select house',
-			'hours_day'    =>  'Please add date',
-			'time_in' 	   =>  'required',
-			'time_out' 	   =>  'required',
-		];
-		$this->validate($request, $rules, $customMessages);
+    public function store(Request $request) {
+		//Validate input fields
+		$request->validate([
+			'company_id' => 'required',
+			'house_id' => 'required',
+			'hours_day' => 'required',
+			'company_id' => 'required',
+			'time_in' => 'required',
+			'time_out' => 'required',
+		]);
+		// $rules = [
+		// 	'company_id'     =>  'required',
+		// 	'house_id'     =>  'required',
+		// 	'hours_day'    =>  'required',
+		// 	'time_in' 	   =>  'required',
+		// 	'time_out' 	   =>  'required',
+		// ];
+		// $customMessages = [
+		// 	'company_id'     =>  'Please select company',
+		// 	'house_id'     =>  'Please select house',
+		// 	'hours_day'    =>  'Please add date',
+		// 	'time_in' 	   =>  'required',
+		// 	'time_out' 	   =>  'required',
+		// ];
+		// $this->validate($request, $rules, $customMessages);
 				
 		if(!empty($request->vacc)){
 			$vacc = $request->vacc;
@@ -161,22 +168,31 @@ class TimesheetaController extends Controller
      */
     public function update(Request $request)
     {
-		$rules = [
-			'company_id'     =>  'required',
-			'house_id'     =>  'required',
-			'hours_day'    =>  'required',
-			'time_in' 	   =>  'required',
-			'time_out' 	   =>  'required',
-		];
-		$customMessages = [
-			'company_id'     =>  'Please select company',
-			'house_id'     =>  'Please select house',
-			'hours_day'    =>  'Please add date',
-			'time_in' 	   =>  'required',
-			'time_out' 	   =>  'required',
-		];
-		$this->validate($request, $rules, $customMessages);
-		$this->validate($request, $rules, $customMessages);
+		//Validate input fields
+		$request->validate([
+			'company_id' => 'required',
+			'house_id' => 'required',
+			'hours_day' => 'required',
+			'company_id' => 'required',
+			'time_in' => 'required',
+			'time_out' => 'required',
+		]);
+		// $rules = [
+		// 	'company_id'     =>  'required',
+		// 	'house_id'     =>  'required',
+		// 	'hours_day'    =>  'required',
+		// 	'time_in' 	   =>  'required',
+		// 	'time_out' 	   =>  'required',
+		// ];
+		// $customMessages = [
+		// 	'company_id'     =>  'Please select company',
+		// 	'house_id'     =>  'Please select house',
+		// 	'hours_day'    =>  'Please add date',
+		// 	'time_in' 	   =>  'required',
+		// 	'time_out' 	   =>  'required',
+		// ];
+		// $this->validate($request, $rules, $customMessages);
+		// $this->validate($request, $rules, $customMessages);
 		if(!empty($request->vacc)){
 			$vacc = $request->vacc;
 		}else{
@@ -357,9 +373,10 @@ class TimesheetaController extends Controller
 		 $count = 1;
 		 $cm_check = $this->checkCM($user);
 			  if($data->count() != 0){
-				foreach ($data as $datas){
+				foreach ($data as $key => $datas){
+			        $count = ($data->currentPage() - 1) * $data->perPage() + $key + 1;
 					echo '<tr>';
-					 echo '<td>'.$count.'</td>';
+				    echo '<td>'.$count.'.</td>';
 					  echo '<td>'.$datas->users->emp_id.'</td>';
 					  
 					   if(!empty($cm_check)){ 
@@ -380,11 +397,11 @@ class TimesheetaController extends Controller
 					  
 						}
 					 }
-					  					   echo  '<td>';
+					  	echo  '<td>';
 						echo '<a  href="'.url('/').'/user/edit/timesheets/'.$datas->id.'" title="Edit"><i class="fa fa-pencil"></i></a>';
 						echo '<a style="margin-left: 5px;" data-baseURL="'.url('/').'" data-ID="'.$datas->id.'" class="delete_ats" title="Delete"><i class="fa fa-trash-o"></i></a>';
-					  echo '</td>';
-					   echo '<td>'.$datas->users->name.'</td>';
+					    echo '</td>';
+					    echo '<td>'.$datas->users->name.'</td>';
 					    echo '<td>'.$datas->users->dept.'</td>';
 					  echo '<td>'.$datas->companies->company.'</td>';
 					  echo '<td>'.substr($datas->houses->house_add, 0, 4).'</td>';
@@ -415,8 +432,13 @@ class TimesheetaController extends Controller
 				$count++;
 				}
 			  }else{
-					echo "<p>Sorry No Data!!</p>";
+					echo '<tr>
+					<td colspan="15" class="no-data">
+						Sorry, No data found!
+					</td>
+				    </tr>';
 			  }
+			  
     }
 	
 	/**

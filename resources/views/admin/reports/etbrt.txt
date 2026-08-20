@@ -17,7 +17,7 @@
 
    <th class="sortStyle unsortStyle"> Sr. No<i class="mdi mdi-chevron-down"></i> </th>
 
-   <div class="d-flex justify-content-end align-items-center mb-3">
+    <div class="d-flex justify-content-end align-items-center mb-3">
         <a href="{{ route('vaccations.create') }}" class="btn btn-primarys" style="background-color:#1c45ef; color: white; border-radius: 6px; padding: 10px 15px; font-size: 14px;">
             <i class="fa fa-plus mr-1"></i>
             Add Vacation
@@ -63,3 +63,11 @@
     <a style="margin-left: 5px" data-baseURL="{{ url('/') }}" data-vocation_id="{{ $datas->id  }}" class="delete_vocation_record" title="Delete">
         <i class="fa fa-trash-o"></i>
     </a>
+
+
+    	// $emp_id = "ILS".rand(100,10000);
+		$last_id = DB::select('SELECT id FROM users WHERE role="user" ORDER BY id DESC LIMIT 1');
+        $last_idd = $last_id[0]->id;
+        $last_idd = $last_idd+1;
+        $last_idd =  str_pad($last_idd, 3, "0", STR_PAD_LEFT); 
+        $emp_id = "FITSS-".$last_idd;

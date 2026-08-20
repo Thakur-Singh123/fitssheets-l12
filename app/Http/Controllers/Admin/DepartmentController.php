@@ -127,9 +127,21 @@ class DepartmentController extends Controller
   * @param  int  $id
   * @return \Illuminate\Http\Response
   */
-  public function destroy($id) {
-    $data = Department::findOrFail($id);
-    $data->delete();
+  
+  //Function for delete department
+  public function destroy(Request $request) {
+		//Get ajax request for department id
+		$department_id = $request->department_id;
+		//Delete department
+		$is_delete_department = Department::where('id', $department_id)->delete();
+		//Check if department record deleted or not
+		if($is_delete_department){
+			echo '<p style="color:green;">Department record deleted successfully.</p>';
+			// Corrected JavaScript code
+			echo '<script>setTimeout(function(){ window.location.href = ""; }, 3000);</script>';
+		} else {
+			echo '<p style="color:green;">Oops something wrong.</p>';
+		}
   }
 	
   //Function for departments

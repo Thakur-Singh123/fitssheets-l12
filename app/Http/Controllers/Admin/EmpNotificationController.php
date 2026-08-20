@@ -6,18 +6,18 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
-use App\EmpNotfication;
-use App\EmpNotificationRel;
-use App\User;
-use App\AdminMeta;
-use App\Company;
-use App\Department;
-use App\UserManager;
+use App\Models\EmpNotfication;
+use App\Models\EmpNotificationRel;
+use App\Models\User;
+use App\Models\AdminMeta;
+use App\Models\Company;
+use App\Models\Department;
+use App\Models\UserManager;
 use DB;
 
 class EmpNotificationController extends Controller
 {
-     /**
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response

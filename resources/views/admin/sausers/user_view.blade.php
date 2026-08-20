@@ -106,7 +106,13 @@
 					  <td><?php echo $count; ?></td>
 					  <td> {{ $datas->emp_id  }} </td>
 					  <td>
-						<a class="view_ts" style="margin-left: 5px;"  href="{{ url('/user/suser/timesheets') }}/{{ $user }}/{{ $datas->id  }}/{{ $frm_date }}/{{ $t_date }}" title="Time Sheets"><i class="fa fa-book"></i></a>
+						{{-- <a class="view_ts" style="margin-left: 5px;"  href="{{ url('/user/suser/timesheets') }}/{{ $user }}/{{ $datas->id  }}/{{ $frm_date }}/{{ $t_date }}" title="Time Sheets"><i class="fa fa-book"></i></a> --}}
+						<a class="view_ts" 
+   style="margin-left: 5px;"  
+   href="{{ url('/user/suser/timesheets') }}/{{ $user }}/{{ $datas->id }}/{{ $frm_date }}/{{ $t_date }}?u=supervisor" 
+   title="Time Sheets">
+   <i class="fa fa-book"></i>
+</a>
 					 </td>
 					  <td> {{ $datas->last_name  }} {{ $datas->first_name  }} </td>
 					  <td> {{ $datas->dept  }} </td>

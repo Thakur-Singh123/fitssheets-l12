@@ -136,7 +136,7 @@ Route::group(['middleware' => 'auth'], function () {
 		Route::resource('lists-issue', 'Admin\ListsProblemController');
 		Route::post('lists-issue/store', 'Admin\ListsProblemController@store')->name('lists-issue.store');
 		Route::post('lists-issue/update', 'Admin\ListsProblemController@update')->name('lists-issue.update');
-		Route::get('lists-issue/destroy/{id}', 'Admin\ListsProblemController@destroy');
+		Route::get('list-issue/destroy', 'Admin\ListsProblemController@destroy');
 		Route::get('lists-issue/approve/{id}', 'Admin\ListsProblemController@approve')->name('admin.approve');
 		Route::get('lists-issue/decline/{id}', 'Admin\ListsProblemController@decline')->name('admin.decline');
 		//Company
@@ -168,7 +168,7 @@ Route::group(['middleware' => 'auth'], function () {
 		Route::resource('department', 'Admin\DepartmentController');
 		Route::post('department/store', 'Admin\DepartmentController@store')->name('department.store');
 		Route::post('department/update', 'Admin\DepartmentController@update')->name('department.update');
-		Route::get('department/destroy/{id}', 'Admin\DepartmentController@destroy');
+		Route::get('departments/destroy', 'Admin\DepartmentController@destroy');
 		//Notifictaions Routes
 		Route::resource('notifications', 'Admin\EmpNotificationController');
 		Route::post('notifications/store', 'Admin\EmpNotificationController@store')->name('notifications.store');

@@ -57,7 +57,7 @@ class UserInfoController extends Controller
 			$t_date = "";
 		}
 		$payperiods_dates1 = Payperiods::with('companies')->orderBy('created_at', 'DESC')->get();
-		$data = User::with('companies')->where("role", "=", "user")->orderBy('name', 'ASC')->paginate(15);
+		$data = User::with('companies')->where("role", "=", "user")->orderBy('name', 'ASC')->paginate(10);
 		$datauser = User::where('role', 'user')->orderBy('name', 'ASC')->get();
 	    $companies = Company::orderBy('company', 'ASC')->get();
 		$Supervisor_color = User::where("role", "=", "supervisor")->orderBy('name', 'ASC')->get();
@@ -182,7 +182,7 @@ class UserInfoController extends Controller
 		}
 		$user = User::where("role", "=", "user")->where('id', '=', $id)->orderBy('created_at', 'DESC')->first();
 		$name = $user->name;
-		$data = TimeSheet::with('companies')->whereBetween('hours_day', array($sfrm_date, $st_date))->where('users_id', '=', $id)->orderBy('created_at', 'DESC')->get();
+		$data = TimeSheet::with('companies')->whereBetween('hours_day', array($sfrm_date, $st_date))->where('users_id', '=', $id)->orderBy('created_at', 'DESC')->paginate(10);
 		$payperiods_dates1 = Payperiods::orderBy('created_at', 'DESC')->get();
         $companies = Company::orderBy('display_order', 'ASC')->get();
 		return view('admin.timesheet.ts_view',compact('data', 'id','name','frm_date','t_date','companies','payperiods_dates1'));
@@ -259,21 +259,22 @@ class UserInfoController extends Controller
      */
     public function resetpassword($id) {
 		$data = User::where('id', '=', $id)->get();
-		return view('admin.users.user_change_pass', compact('data', 'id'));
+		return view('admin.users.user_change_pass', compact('data','id'));
     }
 	
 	
-	//function for update profile password
+	//Function for update profile password
 	public function updatepassword(Request $request){
-		request()->validate([
+		$request->validate([
             'current_password' => 'required',
             'new_password' => 'min:6|required_with:confirm_password|same:new_confirm_password',
             'new_confirm_password' => 'required',
         ]);
 		//update user password
 		$user = User::where('id', '=', $request->hidden_id)->first(); 
+
 		if(!Hash::check($request['current_password'], $user->password)){
-			return back()->with('Pass_Success','Password does not match');
+			return back()->with('error','Password does not match');
 		} else {
 			$update_pass = DB::table('users')
 			->where('id', $user->id)
@@ -282,43 +283,61 @@ class UserInfoController extends Controller
 			'pass' => $request['new_password'],
 			]);
 			if($update_pass){
-				return back()->with('Pass_Success','Password is updated successfully!');
+				return back()->with('success','Password updated successfully.');
 			} else {
-				return back()->with('Pass_Success','Oops something went wrong');
+				return back()->with('error','Oops something went wrong');
 			}
 		}
 	}
 	
 	/**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    * Show the form for creating a new resource.
+    *
+    * @return \Illuminate\Http\Response
+    */
+	
+	//Function for create user
     public function create() {
+		//Get department
 		$department = Department::orderBy('department', 'ASC')->get();
+		//Get companies
 		$companies = Company::orderBy('created_at', 'DESC')->get();
         return view('admin.users.user_add',compact('department','companies'));
     }
 	
-	 /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+	/**
+    * Store a newly created resource in storage.
+    *
+    * @param  \Illuminate\Http\Request  $request
+    * @return \Illuminate\Http\Response
+    */
+
+	//Function for store user
     public function store(Request $request) {
-		$rules = [
-			'first_name'     =>  'required',
-			'email'    =>  'required|email|unique:users',
-			'role' 	   =>  'required',
+		//Validate input fields
+		$request->validate([
+			'first_name' =>'required',
+			'email' =>'required',
+			'role' =>'required',
 			'driving_license' => 'image|mimes:jpeg,png,jpg,gif,svg|max:5120',
-		];
-		$customMessages = [
-			'first_name'     =>  'Please add user first name',
-			'email'    =>  'Please add user email and must be unique.',
-			'role' 	   =>  'Please add user role',
-		];
-		$this->validate($request, $rules, $customMessages);
+		]);
+		//Check if the email already exists
+        $IsEmailExists = User::where('email', $request->email)->exists();
+        if($IsEmailExists) {
+            return back()->with('error', 'Email is already taken. Please try with a new email.');
+        }
+		// $rules = [
+		// 	'first_name'     =>  'required',
+		// 	'email'    =>  'required|email|unique:users',
+		// 	'role' 	   =>  'required',
+		// 	'driving_license' => 'image|mimes:jpeg,png,jpg,gif,svg|max:5120',
+		// ];
+		// $customMessages = [
+		// 	'first_name'     =>  'Please add user first name',
+		// 	'email'    =>  'Please add user email and must be unique.',
+		// 	'role' 	   =>  'Please add user role',
+		// ];
+		// $this->validate($request, $rules, $customMessages);
 		if ($request->hasFile('driving_license')) {
 			$image = $request->file('driving_license');
 			$iname = 'emp_driving_license'.time().'.'.$image->getClientOriginalExtension();
@@ -358,7 +377,7 @@ class UserInfoController extends Controller
 			'email' => $request->email,
 			'role' => $request->role,
 			'dept' => $request->dept,
-			'status'     =>  $request->status,
+	        'status' => $request->status ?? '-',
 			'companies_id' => $company_nm,
 			'hourst_rate' => $request->hour_rate,
 			'password' => Hash::make($request->password),
@@ -372,17 +391,18 @@ class UserInfoController extends Controller
 				$user_comp = array('musers_id' => $manager_id, 'users_id' => $company);
 				UserManager::create($user_comp);
 			}
-		}	
+		}
+		//Check if user store or not	
 		if($user_store){
-			if($request->role == "user"){
-				return redirect('/users')->with(['success' => 'User Created Successfully!!']);
-			}elseif($request->role == "manager"){
-				return redirect('/managers')->with(['success' => 'Manager Created Successfully!!']);
-			}elseif($request->role == "supervisor"){
-				return redirect('/supervisors')->with(['success' => 'Supervisor Created Successfully!!']);
-			}	
-		}else{
-			return redirect()->back()->with(['success' => 'Error while creating User!!']);
+			if($request->role == "user") {
+				return redirect('/users')->with(['success' => 'User created successfully.']);
+			} elseif($request->role == "manager") {
+				return redirect('/managers')->with(['success' => 'Manager created successfully.']);
+			} elseif($request->role == "supervisor") {
+				return redirect('/supervisors')->with(['success' => 'Supervisor created successfully.']);
+			}
+		} else {
+			return redirect()->back()->with(['error' => 'Error while creating user!']);
 		}
     }
 	
@@ -422,21 +442,33 @@ class UserInfoController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request) {
-		$rules = [
-			'first_name'     =>  'required',
-			'email'    =>  'required|email',
-			'role' 	   =>  'required',
-			'dept'     =>  'required',
-		];
-		$customMessages = [
-			'first_name'     =>  'Please add user first name',
-			'email'    =>  'Please add user email and must be unique.',
-			'role' 	   =>  'Please add user role',
-			'dept'     =>  'Please add user department',
-		];
-		$this->validate($request, $rules, $customMessages);
+		//Validate input fields
+		$request->validate([
+			'first_name' =>'required',
+			'email' =>'required',
+			'role' =>'required',
+			'driving_license' => 'image|mimes:jpeg,png,jpg,gif,svg|max:5120',
+		]);
+		// $rules = [
+		// 	'first_name'     =>  'required',
+		// 	'email'    =>  'required|email',
+		// 	'role' 	   =>  'required',
+		// 	'dept'     =>  'required',
+		// ];
+		// $customMessages = [
+		// 	'first_name'     =>  'Please add user first name',
+		// 	'email'    =>  'Please add user email and must be unique.',
+		// 	'role' 	   =>  'Please add user role',
+		// 	'dept'     =>  'Please add user department',
+		// ];
+		// $this->validate($request, $rules, $customMessages);
 		$user = User::whereId($request->hidden_id)->first();
-		
+		//Check duplicate email except current user
+		$IsEmailExists = User::where('email', $request->email)->where('id', '!=', $request->hidden_id)->exists();
+		if ($IsEmailExists) {
+			return redirect()->back()->withInput()->with('error', 'Email already exists. Please try a new email.');
+		}
+		//Check driving license
 		if ($request->hasFile('driving_license')) {
 			if( $user->drivers_license != '' ){
 				unlink(public_path() . '/assets/uploads/driving-license/' .$user->drivers_license);
@@ -520,18 +552,17 @@ class UserInfoController extends Controller
 				$UserCasemanagerRel = UserCasemanagerRel::create($form_data);
 			}
 		}	
-		
+		//Check if user updatd or not
 		if($user_update){
-			if($request->role == "user"){
-				return redirect('/users')->with(['success' => 'User Updated Successfully!!']);
-			}elseif($request->role == "casemanager"){
-				return redirect('/casemanagers')->with(['success' => 'Manager Updated Successfully!!']);
-			}elseif($request->role == "supervisor"){
-				return redirect('/supervisors')->with(['success' => 'Supervisor Updated Successfully!!']);
+			if($request->role == "user") {
+				return redirect('/users')->with(['success' => 'User updated successfully.']);
+			} elseif($request->role == "casemanager") {
+				return redirect('/casemanagers')->with(['success' => 'Manager updated successfully.']);
+			} elseif($request->role == "supervisor") {
+				return redirect('/supervisors')->with(['success' => 'Supervisor updated successfully.']);
 			}
-			
-		}else{
-			return redirect()->back()->with(['success' => 'Error while updating User!!']);
+		} else {
+			return redirect()->back()->with(['success' => 'Error while updating user!']);
 		}
     }
 	

@@ -2,7 +2,7 @@
 
 @section('content')
 <?php use App\Http\Controllers\Admin\TimesheetaController;
-use App\Payperiods;
+use App\Models\Payperiods;
 $payperiods_dates1 = Payperiods::orderBy('created_at', 'DESC')->get(); ?>
 <div class="content-wrapper">
 	@if(\Session::has('success'))
@@ -125,7 +125,7 @@ $payperiods_dates1 = Payperiods::orderBy('created_at', 'DESC')->get(); ?>
 			<table id="sortable-table-1" class="table dataTable table-striped table-responsive">
 			  <thead>
 				<tr>
-				  <th class="sortStyle unsortStyle"> #<i class="mdi mdi-chevron-down"></i> </th>
+				  <th class="sortStyle unsortStyle"> Sr. No<i class="mdi mdi-chevron-down"></i> </th>
 				  <th class="sortStyle unsortStyle">Emp ID<i class="mdi mdi-chevron-down"></i> </th>
 				  <?php if(!empty($cm_check)){ ?>
 				  <th class="sortStyle unsortStyle"> Case Manager <i class="mdi mdi-chevron-down"></i> </th-->
@@ -155,7 +155,7 @@ $payperiods_dates1 = Payperiods::orderBy('created_at', 'DESC')->get(); ?>
 			  @if($data->count() != 0)
 				@foreach ($data as $datas)
 					<tr>
-					  <td><?php echo $count; ?></td>
+					  <td>{{ ($data->currentPage() - 1) * $data->perPage() + $loop->iteration }}.</td>
 					  <td> {{ $datas->users->emp_id  }} </td>
 					  <?php if(!empty($cm_check)){ ?>
 						  <?php if($datas->cmcheck_status == 2){ ?>
@@ -205,10 +205,15 @@ $payperiods_dates1 = Payperiods::orderBy('created_at', 'DESC')->get(); ?>
 				@endforeach
 				
 				@else
-					<p>Sorry No Data!!</p>
+				<tr>
+					<td colspan="20" class="no-data">
+						Sorry, No data found!
+					</td>
+				</tr>  
 				@endif
 			  </tbody>
 			</table>
+			{{ $data->links('pagination::bootstrap-5') }}
 			<br>
 		  </div>
 		</div>

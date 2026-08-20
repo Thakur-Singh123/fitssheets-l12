@@ -2,48 +2,46 @@
 @section('content')
 <div class="content-wrapper">
 	<div class="row">
-    @if(session('success'))
-    <div class="alert alert-success">
-        <h4>{{ session('success') }}</h4>
-    </div>
-    @endif
-    @if(session('error'))
-    <div class="alert alert-danger">
-        <h4>{{ session('error') }}</h4>
-    </div>
-    @endif
-
-	</div>
-	<div class="row">
-@if($data->count() != 0)
-			@foreach ($data as $datas)
-	  <div class="col-md-12 grid-margin stretch-card">
-		<div class="card">
-		  <div class="card-body">
-			<h4 class="card-title">Edit Department</h4>
-			<p style="display:none" class="card-description"> Basic form elements </p>
-			<form method="POST" action="{{ url('/department/update') }}" class="forms-sample">
-			@csrf
-			 <input type="hidden" id="hidden_id" name="hidden_id" class="form-control" value="{{ $datas->id }}" >
-			 <div class="form-group">
-                        <label for="dept_add">Department Name</label>
-						<input id="dept_add" class="form-control"  value="{{ $datas->department }}" name="dept_add" placeholder="name"/>
-                @error('dept_add')
-    <small class="validation-error">
-        {{ $message }}
-    </small>
-    @enderror
-					</div>
-			  <button type="submit" class="btn btn-success mr-2">Update</button>
-			</form>
-		  </div>
+		@if(session('success'))
+		<div class="alert alert-success">
+			<h4>{{ session('success') }}</h4>
 		</div>
-	  </div>
-				@endforeach
-		@else
-			<p>Sorry No Data!!</p>
+		@endif
+		@if(session('error'))
+		<div class="alert alert-danger">
+			<h4>{{ session('error') }}</h4>
+		</div>
 		@endif
 	</div>
-  </div>
-
+	<div class="row">
+	@if($data->count() != 0)
+		@foreach ($data as $datas)
+		<div class="col-md-12 grid-margin stretch-card">
+			<div class="card">
+				<div class="card-body">
+					<h4 class="card-title">Edit Department</h4>
+					<p style="display:none" class="card-description"> Basic form elements </p>
+					<form method="POST" action="{{ url('/department/update') }}" class="forms-sample">
+					@csrf
+						<input type="hidden" id="hidden_id" name="hidden_id" class="form-control" value="{{ $datas->id }}" >
+						<div class="form-group">
+							<label for="dept_add">Department Name</label>
+							<input id="dept_add" class="form-control"  value="{{ $datas->department }}" name="dept_add" placeholder="name"/>
+							@error('dept_add')
+							<small class="validation-error">
+								{{ $message }}
+							</small>
+							@enderror
+						</div>
+						<button type="submit" class="btn btn-success mr-2">Update</button>
+					</form>
+				</div>
+			</div>
+		</div>
+		@endforeach
+		@else
+		<p class="no-data">Sorry no data found!</p>
+		@endif
+	</div>
+</div>
 @endsection		

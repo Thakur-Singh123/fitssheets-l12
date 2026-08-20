@@ -70,10 +70,18 @@
 	</td>
 					  <td> {{ $datas->emp_id  }} </td>
 					  <td>
-						<a  href="{{ route('users.edit', $datas->id) }}" title="Edit"><i class="fa fa-pencil"></i></a>
+						{{-- <a  href="{{ route('users.edit', $datas->id) }}" title="Edit"><i class="fa fa-pencil"></i></a> --}}
+						<a href="{{ route('users.edit', ['user' => $datas->id, 'u' => 'supervisor']) }}" title="Edit">
+							<i class="fa fa-pencil"></i>
+						</a>
 						 <?php if(Auth::user()->id == 72 || Auth::user()->id == 50 || Auth::user()->id == 282 ){ ?>
 						<?php }else{ ?>
-						<a  style="margin-left: 5px;"  href="{{ url('/user/changepassword') }}/{{ $datas->id  }}" title="Change Password"><i class="fa fa-unlock"></i></a>
+						{{-- <a  style="margin-left: 5px;"  href="{{ url('/user/changepassword') }}/{{ $datas->id  }}" title="Change Password"><i class="fa fa-unlock"></i></a> --}}
+						<a style="margin-left: 5px;"  
+   href="{{ url('/user/changepassword') }}/{{ $datas->id }}?u=supervisor" 
+   title="Change Password">
+   <i class="fa fa-unlock"></i>
+</a>
 						<?php } ?>
 
 						<a style="margin-left: 5px;cursor:pointer" data-baseURL="{{ url('/') }}" data-ID="{{ $datas->id  }}" class="delete_user" title="Delete"><i class="fa fa-trash-o"></i></a>
@@ -81,7 +89,12 @@
 						<a  style="margin-left: 5px;"  href="{{ url('/user/timesheets') }}/{{ $datas->id  }}" title="Time Sheets"><i class="fa fa-book"></i></a>
 						<?php } ?>
 						<?php if($datas->role == "supervisor"){ ?>
-						<a  style="margin-left: 5px;"  href="{{ url('/user/suser') }}/{{ $datas->id  }}/{{ $frm_date }}/{{ $t_date }}" title="Supervisor User"><i class="fa fa-book"></i></a>
+						{{-- <a  style="margin-left: 5px;"  href="{{ url('/user/suser') }}/{{ $datas->id  }}/{{ $frm_date }}/{{ $t_date }}" title="Supervisor User"><i class="fa fa-book"></i></a> --}}
+						<a style="margin-left: 5px;"  
+							href="{{ url('/user/suser') }}/{{ $datas->id }}/{{ $frm_date }}/{{ $t_date }}?u=supervisor" 
+							title="Supervisor User">
+							<i class="fa fa-book"></i>
+						</a>
 						<?php } ?>
 					  </td>
 					  <td style="display:none">

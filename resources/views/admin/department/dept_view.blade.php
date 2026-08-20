@@ -72,8 +72,12 @@
 						<?php $count++; ?> 
 						@endforeach 
 						@else
-						<p>Sorry No Data!!</p>
-						@endif
+						<tr>
+						<td colspan="4" class="no-data">
+							Sorry, No data found!
+						</td>
+						</tr>
+						@endif 
 					</tbody>
 				</table>
 				{{ $data->links('pagination::bootstrap-5') }}

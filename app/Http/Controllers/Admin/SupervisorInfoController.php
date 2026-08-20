@@ -8,11 +8,11 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use App\User;
-use App\AdminMeta;
-use App\Company;
-use App\Department;
-use App\UserManager;
+use App\Models\User;
+use App\Models\AdminMeta;
+use App\Models\Company;
+use App\Models\Department;
+use App\Models\UserManager;
 use DateTime;
 
 class SupervisorInfoController extends Controller

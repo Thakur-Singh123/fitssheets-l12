@@ -26,7 +26,7 @@
               <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}" placeholder="Name">
               @error('name')
               <small class="validation-error">
-                  {{ $message }}
+                {{ $message }}
               </small>
               @enderror
             </div>
@@ -35,7 +35,7 @@
               <input type="text" class="form-control" id="company" name="company" value="{{ old('company') }}" placeholder="Company">
               @error('company')
               <small class="validation-error">
-                  {{ $message }}
+                {{ $message }}
               </small>
               @enderror
             </div>
