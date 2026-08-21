@@ -92,10 +92,13 @@
                     clearInterval(interval);
                 }, 1000);
             });
-            //Error Alert Auto Hide
-            setTimeout(function () {
-                $('.error-alert').fadeOut(500);
-            }, 4000);
+        </script>
+        <script>
+            $(document).ready(function () {
+                setTimeout(function () {
+                    $('.alert-danger').fadeOut(500);
+                }, 500);
+            });
         </script>
         <script>
         $(document).on('click','.password-toggle',function() {
@@ -112,13 +115,6 @@
             .addClass('fa-eye');
             }
         });
-        </script>
-        <script>
-            $(document).ready(function () {
-                setTimeout(function () {
-                $('.alert-danger').fadeOut(500);
-            }, 500000);
-            });
         </script>
     </body>
 </html>

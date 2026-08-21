@@ -364,4 +364,84 @@ $(document).ready(function() {
             }
         });
     });
+    //Delete user
+    $('body').on('click', '.is_delete_user', function(event) {
+        event.preventDefault();
+        //Get data attribute
+        var user_id = $(this).data('user_id');    
+        //Delete through sweet alert
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this user!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, Delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                //Call ajax
+                $.ajax({
+                    type: 'GET',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    url: bs_url+ '/user/destroy',  
+                    data: { 
+                        user_id: user_id 
+                    },
+                    //Show success message
+                    success: function(response) {
+                        Swal.fire({
+                            title: "Deleted!",
+                            text: "User deleted successfully.",
+                            icon: "success"
+                        }).then(() => {
+                            location.reload();
+                        });
+                    },
+                });
+            }
+        });
+    });
+    //Delete user timesheet
+    $('body').on('click', '.delete_utms', function(event) {
+        event.preventDefault();
+        //Get data attribute
+        var utimests_id = $(this).data('utimests_id');    
+        //Delete through sweet alert
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this user timesheet!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, Delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                //Call ajax
+                $.ajax({
+                    type: 'GET',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    url: bs_url+ '/user/destroy/timesheets',  
+                    data: { 
+                        utimests_id: utimests_id 
+                    },
+                    //Show success message
+                    success: function(response) {
+                        Swal.fire({
+                            title: "Deleted!",
+                            text: "User timesheet deleted successfully.",
+                            icon: "success"
+                        }).then(() => {
+                            location.reload();
+                        });
+                    },
+                });
+            }
+        });
+    });
 });

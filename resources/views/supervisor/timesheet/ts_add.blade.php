@@ -1,5 +1,4 @@
 @extends('layouts.supervisor')
-
 @section('content')
 		<div class="content-wrapper">
 			<div class="row">

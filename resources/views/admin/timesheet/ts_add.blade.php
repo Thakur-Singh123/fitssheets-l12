@@ -1,17 +1,77 @@
 @extends('layouts.master')
 @section('content')
+<style>
+/*Popup container - can be anything you want*/
+.validation-error,
+small.validation-error,
+label.error{
+  display: block;
+  margin-top: 6px;
+  color: #ff1b15;
+  font-size: 12px;
+  font-weight: 500;
+}
+.popup {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+/*The actual popup*/
+.popup .popuptext {
+  visibility: hidden;
+  width: 700px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 8px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -80px;
+}
+/*Popup arrow*/
+.popup .popuptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 15%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+/*Toggle this class - hide and show the popup */
+.popup .show {
+  visibility: visible;
+  -webkit-animation: fadeIn 1s;
+  animation: fadeIn 1s;
+}
+/*Add animation (fade in the popup)*/
+@-webkit-keyframes fadeIn {
+  from {
+    opacity: 0;
+  } 
+  to {
+    opacity: 1;
+  }
+  }
+  @keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity:1 ;
+  }
+}
+</style>
 		<div class="content-wrapper">
 			<div class="row">
-				@if (count($errors) > 0)
-				<div class="alert alert-danger">
-					<strong>Whoops!</strong> There were some problems with your input.<br><br>
-					<ul>
-						@foreach ($errors->all() as $error)
-						<li>{{ $error }}</li>
-						@endforeach
-					</ul>
-				</div>
-				@endif
 			</div>
             <div class="row">
 
@@ -32,7 +92,12 @@
 									<option value="{{ $company->id }}" >{{ $company->company }}</option>
 								@endforeach
 							  @endif
-						 </select>
+						</select>
+						@error('company_id')
+						<small class="validation-error">
+							{{ $message }}
+						</small>
+						@enderror
                       </div>
 					   <div class="form-group">
                         <label for="company_id">Select House</label>
@@ -43,20 +108,40 @@
 									<option value="{{ $house->id }}" >{{ $house->house_add }}</option>
 								@endforeach
 							  @endif
-						 </select>
+						</select>
+						@error('house_id')
+						<small class="validation-error">
+							{{ $message }}
+						</small>
+						@enderror
                       </div>
                       <div class="form-group">
                         <label for="date">Select Date</label>
-                        <input type="text" class="form-control" id="hours_day" name="hours_day" >
+                        <input type="text" class="form-control" id="hours_day" name="hours_day">
+						@error('hours_day')
+						<small class="validation-error">
+							{{ $message }}
+						</small>
+						@enderror
                       </div>
 					  
 					   <div class="form-group">
 						<label for="hours">Time In</label>
-						<input type="text" class="form-control" id="time_in" name="time_in" placeholder="">
+						<input type="text" class="form-control" id="time_in" name="time_in" value="{{ old('time_in') }}" placeholder="">
+						@error('time_in')
+						<small class="validation-error">
+							{{ $message }}
+						</small>
+						@enderror
 					  </div>
 					  <div class="form-group">
 						<label for="hours">Time Out</label>
-						<input type="text" class="form-control" id="time_out" name="time_out" placeholder="">
+						<input type="text" class="form-control" id="time_out" name="time_out" value="{{ old('time_out') }}" placeholder="">
+						@error('time_out')
+						<small class="validation-error">
+							{{ $message }}
+						</small>
+						@enderror
 					  </div>
 					  <div class="form-group">
                         <label for="company_id">Approved</label>
@@ -68,11 +153,11 @@
                       </div>
 					  <div class="form-group">
 						<label for="notes">Remarks</label>
-						<input type="text" class="form-control" id="remarks" name="remarks" placeholder="">
+						<input type="text" class="form-control" id="remarks" name="remarks" value="{{ old('remarks') }}" placeholder="">
 					  </div>
 					  <div style="display:none" class="form-check">
-                              <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input" id="vacc" name="vacc" > Vacation Status <i class="input-helper"></i></label>
+                            <label class="form-check-label">
+                            <input type="checkbox" class="form-check-input" id="vacc" name="vacc" > Vacation Status <i class="input-helper"></i></label>
                       </div>
 					   
                       <button type="submit" class="btn btn-success mr-2">Submit</button>

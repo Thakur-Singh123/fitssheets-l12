@@ -285,7 +285,8 @@
 						<?php }else{ ?>
 						<a  style="margin-left: 5px;"  href="{{ url('/user/changepassword') }}/{{ $datas->id  }}" title="Change Password"><i class="fa fa-unlock"></i></a>
 						<?php } ?>
-						<a style="margin-left: 5px;cursor:pointer" data-baseURL="{{ url('/') }}" data-ID="{{ $datas->id  }}" class="delete_user" title="Delete"><i class="fa fa-trash-o"></i></a>
+						{{-- <a style="margin-left: 5px;cursor:pointer" data-baseURL="{{ url('/') }}" data-ID="{{ $datas->id  }}" class="delete_user" title="Delete"><i class="fa fa-trash-o"></i></a> --}}
+						<a style="margin-left: 5px;cursor:pointer" data-baseURL="{{ url('/') }}" data-user_id="{{ $datas->id  }}" class="is_delete_user" title="Delete"><i class="fa fa-trash-o"></i></a>
 						<?php if($datas->role == "user"){ ?>
 						 <?php if(isset($search_by_comp)){ ?>
 						<a  style="margin-left: 5px;"  href="{{ url('/user/timesheets') }}/{{ $datas->id  }}/{{ $frm_date }}/{{ $t_date }}/{{ $search_by_comp }}" title="Time Sheets"><i class="fa fa-book"></i></a>
@@ -366,13 +367,13 @@
 						 <td> <?php if($datas->drivers_license != null){ ?>
 					<img style=" margin-top: 15px; width: 152px;height: 156px;" src="{{ url('/assets/uploads/driving-license') }}/{{ $datas->drivers_license }}">
 					<?php } else{ ?>
-						<p>No License Found!</p>
+						<p class="no-data">No license found!</p>
 						<a  href="{{ route('users.edit', $datas->id) }}" title="Edit">Upload Here</a>
 					<?php } ?> </td>
 					<td> <?php if($datas->covid_report != null){ ?>
 					<img style=" margin-top: 15px; width: 152px;height: 156px;border-radius: none !important;" src="{{ url('/assets/uploads/covid-report') }}/{{ $datas->covid_report }}">
 					<?php } else{ ?>
-						<p>No Report Found!</p>
+						<p class="no-data">No report found!</p>
 					<?php } ?> </td>
 					 <td> {{ $datas->email  }} </td>
 					  <?php if(Auth::user()->id == 72 || Auth::user()->id == 50 ){ ?>
@@ -400,3 +401,4 @@
 	<div class="loding"></div>
 </div>
 @endsection	
+

@@ -190,12 +190,12 @@ class UserInfoController extends Controller
 	
 	public function timesheets_company($id,$frm_dt,$to_dt,$search_by_comp) {
 		$payperiods_dates = payperiods();
-		if(isset($payperiods_dates)){
-			 $frm_date  = $payperiods_dates[0]['frm_date'];
-			 $t_date = $payperiods_dates[0]['t_date'];
-			 $sfrm_date  = $payperiods_dates[1]['sfrm_date'];
-			 $st_date = $payperiods_dates[1]['st_date'];
-		}else{
+		if(isset($payperiods_dates)) {
+			$frm_date  = $payperiods_dates[0]['frm_date'];
+			$t_date = $payperiods_dates[0]['t_date'];
+			$sfrm_date  = $payperiods_dates[1]['sfrm_date'];
+			$st_date = $payperiods_dates[1]['st_date'];
+		} else {
 			$frm_date  = "";
 			$t_date = "";
 			$sfrm_date  = "";
@@ -246,17 +246,19 @@ class UserInfoController extends Controller
 		}
     }
 	
+	//Function for mdestory
     public function mdestroy($id) {
         $data = UserManager::findOrFail($id);
         $data->delete();
     }
 	
-	
 	/**
-     * User Reset Password
-     *
-     * @return void
-     */
+    * User Reset Password
+    *
+    * @return void
+    */
+
+	//Function for reser password
     public function resetpassword($id) {
 		$data = User::where('id', '=', $id)->get();
 		return view('admin.users.user_change_pass', compact('data','id'));
@@ -347,17 +349,17 @@ class UserInfoController extends Controller
 			$iname = "";
 		}
 		$name = $request->first_name." ".$request->last_name;
-		// $emp_id = "ILS".rand(100,10000);
+		//$emp_id = "ILS".rand(100,10000);
 		$last_id = DB::select('SELECT id FROM users WHERE role="user" ORDER BY id DESC LIMIT 1');
         $last_idd = $last_id[0]->id;
         $last_idd = $last_idd+1;
         $last_idd =  str_pad($last_idd, 3, "0", STR_PAD_LEFT); 
         $emp_id = "FITSS-".$last_idd;
 
-        if(isset($request->companys_id) ){
+        if(isset($request->companys_id) ) {
         	$companies = Company::where('id', '=', $request->companys_id[0])->orderBy('created_at', 'DESC')->get();
         	$company_nm = $companies[0]->company;
-		}else{
+		} else {
 			$company_nm = "";
 		}
 		$date    = explode('-', $request->hours_day);
@@ -407,22 +409,24 @@ class UserInfoController extends Controller
     }
 	
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    * Display the specified resource.
+    *
+    * @param  int  $id
+    * @return \Illuminate\Http\Response
+    */
+
     public function show($id) {
         //
     }
 
-
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    * Show the form for editing the specified resource.
+    *
+    * @param  int  $id
+    * @return \Illuminate\Http\Response
+    */
+
+	//Function for edit user
     public function edit($id) {
 		$alluser = User::where("role", "=", "user")->orderBy('name', 'ASC')->get();
 		$department = Department::orderBy('department', 'ASC')->get();
@@ -435,12 +439,14 @@ class UserInfoController extends Controller
     }
 	
 	/**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    * Update the specified resource in storage.
+    *
+    * @param  \Illuminate\Http\Request  $request
+    * @param  int  $id
+    * @return \Illuminate\Http\Response
+    */
+
+	//Function for update user
     public function update(Request $request) {
 		//Validate input fields
 		$request->validate([
@@ -449,19 +455,19 @@ class UserInfoController extends Controller
 			'role' =>'required',
 			'driving_license' => 'image|mimes:jpeg,png,jpg,gif,svg|max:5120',
 		]);
-		// $rules = [
-		// 	'first_name'     =>  'required',
-		// 	'email'    =>  'required|email',
-		// 	'role' 	   =>  'required',
-		// 	'dept'     =>  'required',
-		// ];
-		// $customMessages = [
-		// 	'first_name'     =>  'Please add user first name',
-		// 	'email'    =>  'Please add user email and must be unique.',
-		// 	'role' 	   =>  'Please add user role',
-		// 	'dept'     =>  'Please add user department',
-		// ];
-		// $this->validate($request, $rules, $customMessages);
+		//$rules = [
+		//'first_name' =>'required',
+		//'email' =>'required|email',
+		//'role' =>'required',
+		//'dept' =>'required',
+		//];
+		//$customMessages = [
+		//'first_name' =>'Please add user first name',
+		//'email' =>'Please add user email and must be unique.',
+		//'role' =>'Please add user role',
+		//'dept' =>'Please add user department',
+		//];
+		//$this->validate($request, $rules, $customMessages);
 		$user = User::whereId($request->hidden_id)->first();
 		//Check duplicate email except current user
 		$IsEmailExists = User::where('email', $request->email)->where('id', '!=', $request->hidden_id)->exists();
@@ -477,54 +483,54 @@ class UserInfoController extends Controller
 			$iname = 'emp_driving_license'.time().'.'.$image->getClientOriginalExtension();
 			$destinationPath = public_path('/assets/uploads/driving-license/');
 			$image->move($destinationPath, $iname);
-		}else{
+		} else {
 			$iname = "";
 		}
 		$name = $request->first_name." ".$request->last_name;
-		if(isset($request->companys_id) ){
+		if(isset($request->companys_id) ) {
         	$companies = Company::where('id', '=', $request->companys_id[0])->orderBy('created_at', 'DESC')->get();
         	$company_nm = $companies[0]->company;
-		}else{
+		} else {
 			$company_nm = "";
 		}
 		$date    = explode('-', $request->hours_day);
 		$date = implode("_", $date);
 		$form_data = array(
-				'name' => $name,
-				'username' => $request->username,
-				'first_name' => $request->first_name,
-				'last_name' => $request->last_name,
-				'emp_id' => $request->emp_id,
-				'dob' => $date,
-				'phone_no' => $request->phone_no,
-				'ssn_no' => $request->ssn_no,
-				'child_sup' => $request->child_sup,
-				'health_insurance' => $request->health_insurance,
-				'drivers_license' => $iname,
-				'email' => $request->email,
-				'color_field' => $request->color_field,
-				'role' => $request->role,
-				'dept' => $request->dept,
-				'status'     =>  $request->status,
-				'hourst_rate' => $request->hour_rate,
-				'companies_id' => $company_nm
+			'name' => $name,
+			'username' => $request->username,
+			'first_name' => $request->first_name,
+			'last_name' => $request->last_name,
+			'emp_id' => $request->emp_id,
+			'dob' => $date,
+			'phone_no' => $request->phone_no,
+			'ssn_no' => $request->ssn_no,
+			'child_sup' => $request->child_sup,
+			'health_insurance' => $request->health_insurance,
+			'drivers_license' => $iname,
+			'email' => $request->email,
+			'color_field' => $request->color_field,
+			'role' => $request->role,
+			'dept' => $request->dept,
+			'status'     =>  $request->status,
+			'hourst_rate' => $request->hour_rate,
+			'companies_id' => $company_nm
 		);
-
+        //Update user
 		$user_update = User::whereId($request->hidden_id)->update($form_data);
-		if(isset($request->companys_id)){
+		if(isset($request->companys_id)) {
 			$data_delte = UserManager::where("musers_id","=", $request->hidden_id)->delete();
-			foreach($request->companys_id as $company){
+			foreach($request->companys_id as $company) {
 				$user_comp = array('musers_id' => $request->hidden_id, 'users_id' => $company);
 				UserManager::create($user_comp);
 			}
 		}	
 		
-		if(isset($request->users_id)){
-			foreach($request->users_id as $users){
+		if(isset($request->users_id)) {
+			foreach($request->users_id as $users) {
 				$users_arrr[] = $users;
 			}
 		}
-		if(isset($users_arrr)){
+		if(isset($users_arrr)) {
 			$users_arrr = array_unique($users_arrr);
 			$data_delte = UserSupervisorRel::where("supervisor_id", "=", $request->hidden_id)->delete();
 			foreach($users_arrr as $users_arr){
@@ -536,12 +542,12 @@ class UserInfoController extends Controller
 			}
 		}	
 
-		if(isset($request->cmusers_id)){
+		if(isset($request->cmusers_id)) {
 			foreach($request->cmusers_id as $users){
 				$cmusers_arrr[] = $users;
 			}
 		}
-		if(isset($cmusers_arrr)){
+		if(isset($cmusers_arrr)) {
 			$cmusers_arrr = array_unique($cmusers_arrr);
 			$data_delte = UserCasemanagerRel::where("casemanager_id", "=", $request->hidden_id)->delete();
 			foreach($cmusers_arrr as $users_arr){
@@ -553,7 +559,7 @@ class UserInfoController extends Controller
 			}
 		}	
 		//Check if user updatd or not
-		if($user_update){
+		if($user_update) {
 			if($request->role == "user") {
 				return redirect('/users')->with(['success' => 'User updated successfully.']);
 			} elseif($request->role == "casemanager") {
@@ -566,31 +572,47 @@ class UserInfoController extends Controller
 		}
     }
 	
+	/**
+    * Remove the specified resource from storage.
+    *
+    * @param  int  $id
+    * @return \Illuminate\Http\Response
+    */
+    //public function destroy($id) {
+    //$data = User::findOrFail($id);
+    //$data->delete();
+    //}
 
-	 /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id) {
-        $data = User::findOrFail($id);
-        $data->delete();
+	//Function for delete user
+    public function destroy(Request $request) {
+		//Get ajax request for user id
+		$user_id = $request->user_id;
+		//Delete user
+		$is_delete_user = User::where('id', $user_id)->delete();
+		//Check if user record deleted or not
+		if($is_delete_user){
+			echo '<p style="color:green;">User record deleted successfully.</p>';
+			// Corrected JavaScript code
+			echo '<script>setTimeout(function(){ window.location.href = ""; }, 3000);</script>';
+		} else {
+			echo '<p style="color:green;">Oops something wrong.</p>';
+		}
     }
-	
+
+	//Function for search user
 	public function user_search(Request $request) {
 		$searchTerm = $request->srch_user;
 		$data = User::where('role', 'user')
-						->where('name', 'LIKE', "%{$searchTerm}%") 
-						->orWhere('email', 'LIKE', "%{$searchTerm}%")
-						->orWhere('emp_id', '=', $searchTerm)
-						->orderBy('name', 'ASC')
-						->get();
-								//dd($data);die();
-			if(isset($data)){
-          $count = 1; 
-			  if($data->count() != 0){
-				foreach ($data as $datas){
+			->where('name', 'LIKE', "%{$searchTerm}%") 
+			->orWhere('email', 'LIKE', "%{$searchTerm}%")
+			->orWhere('emp_id', '=', $searchTerm)
+			->orderBy('name', 'ASC')
+			->get();
+
+			if(isset($data)) {
+            $count = 1; 
+			  if($data->count() != 0) {
+				foreach ($data as $datas) {
 					$approved_by = $this->approved_by($datas->id); 
 					$name  = strtoupper($approved_by);
 				   $words = explode(" ", $name);
@@ -652,16 +674,16 @@ class UserInfoController extends Controller
 				 // echo "</td>";
 				//	  echo "<td>".date('M d, Y', strtotime($datas->created_at))."</td>";
 					  
-					  echo "<td>";
-	$total_hours = $this->total_time($datas->id);
+					echo "<td>";
+	               $total_hours = $this->total_time($datas->id);
 						if($total_hours <=  79){
 							echo "<p style='text-align: center;font-size: 15px;font-weight: 700;padding: 5px;border-radius: 20px;color:#000;background:yellow' >".$total_hours."</p>";
-						}elseif($total_hours == 80){
+						}elseif($total_hours == 80) {
 								echo "<p style='text-align: center;font-size: 15px;font-weight: 700;padding: 5px;border-radius: 20px;color:#fff;background:green' >".$total_hours."</p>";
-						}else{
+						}else {
 						   echo "<p style='text-align: center;font-size: 15px;font-weight: 700;padding: 5px;border-radius: 20px;color:#fff;background:purple' >".$total_hours."</p>";
 						}
-				  echo "</td>";
+				   echo "</td>";
 				   echo "<td>";
 				   $approved_hours = $this->approved_time($datas->id);
 						if($approved_hours <=  79){

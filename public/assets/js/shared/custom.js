@@ -97,22 +97,23 @@ $(document).on('change','#role', function(e){
 
 });
 
-$(document).on('change','#time_out', function(e){
-    var time_in_val =  $("#time_in").val();
-    var time_out_val =  $("#time_out").val();
-    var baseUrl = $(this).attr('data-baseURL');
-		$.ajax({
-			url: baseUrl+"/get/totalhours/"+time_in_val+"/"+time_out_val,
-			beforeSend:function(){
-				$(".loding").show();
-			},
-			success:function(data){
-			    $(".loding").hide();
-				$("#total_hours").val(data);
-			}
-		});
+$(document).on('change', '#time_out', function () {
+    var time_in_val = $("#time_in").val();
+    var time_out_val = $("#time_out").val();
+    if (time_in_val == '' || time_out_val == '') {
+        return;
+    }
+    $.ajax({
+        url: "{{ url('/get/totalhours') }}/" + time_in_val + "/" + time_out_val,
+        beforeSend: function () {
+            $(".loding").show();
+        },
+        success: function (data) {
+            $(".loding").hide();
+            $("#total_hours").val(data);
+        },
+    });
 });
-
 //Delete User
 $(document).on('click','.delete_user', function(){
 	var id = $(this).attr('data-id');

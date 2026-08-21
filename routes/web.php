@@ -75,7 +75,7 @@ Route::group(['middleware' => 'auth'], function () {
 		Route::get('users/{frm_dt}/{to_dt}/{search_by_comp}', 'Admin\UserInfoController@user_with_com');
 		Route::post('users/store', 'Admin\UserInfoController@store')->name('users.store');
 		Route::post('users/update', 'Admin\UserInfoController@update')->name('users.update');
-		Route::get('usersd/destroy/{id}', 'Admin\UserInfoController@destroy');
+		Route::get('user/destroy', 'Admin\UserInfoController@destroy');
 		//User exports
 		Route::get('user/export/all', 'Admin\UserInfoController@exort_user');
 		Route::get('user/test/export', 'Admin\UserInfoController@exort_user_new');
@@ -98,7 +98,7 @@ Route::group(['middleware' => 'auth'], function () {
 		Route::get('user/create/timesheets/{id}', 'Admin\TimesheetaController@create');
 		Route::post('user/store/timesheets', 'Admin\TimesheetaController@store');
 		Route::get('user/edit/timesheets/{id}', 'Admin\TimesheetaController@edit');
-		Route::get('user/destroy/timesheets/{id}', 'Admin\TimesheetaController@destroy');
+		Route::get('user/destroy/timesheets', 'Admin\TimesheetaController@destroy');
 		Route::post('user/update/timesheets', 'Admin\TimesheetaController@update');
 		Route::get('user/search/time', 'Admin\TimesheetaController@srch_time');
 		Route::get('user/search/times', 'Admin\TimesheetaController@srch_times');

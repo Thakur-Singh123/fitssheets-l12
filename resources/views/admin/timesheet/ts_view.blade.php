@@ -1,15 +1,19 @@
 @extends('layouts.master')
-
 @section('content')
 <?php use App\Http\Controllers\Admin\TimesheetaController;
 use App\Models\Payperiods;
 $payperiods_dates1 = Payperiods::orderBy('created_at', 'DESC')->get(); ?>
 <div class="content-wrapper">
-	@if(\Session::has('success'))
-		<div class="alert alert-success">
-			<h4>{{\Session::get('success')}}</h4>
-		</div>
-	@endif
+    @if(session('success'))
+    <div class="alert alert-success">
+        <h4>{{ session('success') }}</h4>
+    </div>
+    @endif
+    @if(session('error'))
+    <div class="alert alert-danger">
+        <h4>{{ session('error') }}</h4>
+    </div>
+    @endif
 	<div class="row">
 	  <div class="col-lg-12 grid-margin stretch-card">
 		<div class="card">
@@ -117,7 +121,7 @@ $payperiods_dates1 = Payperiods::orderBy('created_at', 'DESC')->get(); ?>
 			
 			
 			@if($data->count() != 0)
-			<div align="left">
+			<div style="margin: 0px 0px 10px 0px;" align="right">
 				<a href="{{ route('user.export.time-sheet', $id) }}" id="export" class="btn btn-success">Export to Excel</a>
 		    </div>
 			@endif
@@ -130,7 +134,6 @@ $payperiods_dates1 = Payperiods::orderBy('created_at', 'DESC')->get(); ?>
 				  <?php if(!empty($cm_check)){ ?>
 				  <th class="sortStyle unsortStyle"> Case Manager <i class="mdi mdi-chevron-down"></i> </th-->
 					<?php } ?>
-				  				  <th> Actions </th>
 				  <th class="sortStyle unsortStyle"> Name<i class="mdi mdi-chevron-down"></i> </th>
 				  <th class="sortStyle unsortStyle"> Department<i class="mdi mdi-chevron-down"></i> </th>
 				  <th class="sortStyle unsortStyle"> Company<i class="mdi mdi-chevron-down"></i> </th>
@@ -146,6 +149,7 @@ $payperiods_dates1 = Payperiods::orderBy('created_at', 'DESC')->get(); ?>
 				   <th > Approved<br>By </th>
 				  <th > User Added<br>Hours At </th>
 				   <th > Approved<br>At </th>
+				   	<th> Actions </th>
 
 				</tr>
 				
@@ -160,7 +164,6 @@ $payperiods_dates1 = Payperiods::orderBy('created_at', 'DESC')->get(); ?>
 					  <?php if(!empty($cm_check)){ ?>
 						  <?php if($datas->cmcheck_status == 2){ ?>
 							<?php $caseManager = TimesheetaController::caseManager($datas->cm_id); ?>
-							
 									
 								  <td>
 								  <?php if(!empty($caseManager)){ ?>
@@ -174,11 +177,6 @@ $payperiods_dates1 = Payperiods::orderBy('created_at', 'DESC')->get(); ?>
 							  <td ></td>
 						  <?php } ?>
 					  <?php } ?>
-					  <td>
-						<a  href="{{ url('/user/edit/timesheets/') }}/{{ $datas->id }}" title="Edit"><i class="fa fa-pencil"></i></a>
-						<a style="margin-left: 5px;" data-baseURL="{{ url('/') }}" data-ID="{{ $datas->id  }}" class="delete_ats" title="Delete"><i class="fa fa-trash-o"></i></a>
-					  </td>
-
 					   <td> {{ $datas->users->name  }}</td>
 					   <td> {{ $datas->users->dept  }} </td>
 					  <td> {{ $datas->companies->company  }}</td>
@@ -199,7 +197,11 @@ $payperiods_dates1 = Payperiods::orderBy('created_at', 'DESC')->get(); ?>
 						<td>{{ date('M d, Y h:i a', strtotime($datas->created_at )) }}</td>
 					  
 					  <td><?php if(!empty($datas->approved_at)){ echo date('M d, Y h:i a', strtotime($datas->approved_at )); }else{ echo "--"; }  ?></td>
-					
+					 <td>
+						<a  href="{{ url('/user/edit/timesheets/') }}/{{ $datas->id }}" title="Edit"><i class="fa fa-pencil"></i></a>
+						{{-- <a style="margin-left: 5px;" data-baseURL="{{ url('/') }}" data-ID="{{ $datas->id  }}" class="delete_ats" title="Delete"><i class="fa fa-trash-o"></i></a> --}}
+						<a style="margin-left: 5px;" data-baseURL="{{ url('/') }}" data-utimests_id="{{ $datas->id  }}" class="delete_utms" title="Delete"><i class="fa fa-trash-o"></i></a>
+					  </td>
 					</tr>
 				<?php $count++; ?>
 				@endforeach
